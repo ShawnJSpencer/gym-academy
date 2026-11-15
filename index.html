@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gym Academy">
+<meta name="theme-color" content="#7b3fe4">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.json">
+<title>Spencer Gymnastics Academy</title>
+<style>
+:root{--pink:#ff4fa3;--purple:#7b3fe4;--ink:#2b1d4e;--soft:#f6f0ff;--card:#fff;--ok:#18b26b;--bad:#ef4466;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);
+ background:linear-gradient(160deg,#ffe3f1 0%,#efe4ff 45%,#dff1ff 100%);background-attachment:fixed;
+ padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);-webkit-user-select:none;user-select:none}
+#app{max-width:1100px;margin:0 auto;padding:12px 14px 70px}
+h1,h2,h3{margin:0}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+.btn{background:var(--purple);color:#fff;border-radius:16px;padding:12px 18px;font-weight:800;font-size:16px;box-shadow:0 4px 0 #5427b0;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #5427b0}
+.btn.pink{background:var(--pink);box-shadow:0 4px 0 #c42c7a}
+.btn.ghost{background:#fff;color:var(--purple);box-shadow:0 4px 0 #d7c8f6}
+.btn.small{padding:8px 12px;font-size:14px;border-radius:12px}
+.btn:disabled{opacity:.45}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.top .title{flex:1;min-width:200px}
+.title h1{font-size:24px;font-weight:900;background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.title .sub{font-size:13px;opacity:.7;font-weight:700}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{background:#fff;border-radius:999px;padding:7px 12px;font-weight:800;font-size:14px;box-shadow:0 2px 8px #7b3fe41a}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.lvl{background:#fff;border-radius:22px;padding:14px;box-shadow:0 6px 18px #7b3fe41f;text-align:left;position:relative;overflow:hidden}
+.lvl .em{font-size:34px}
+.lvl h3{font-size:19px;font-weight:900;margin-top:4px}
+.lvl .ages{font-weight:800;font-size:13px;opacity:.75}
+.lvl .cnt{position:absolute;right:14px;top:14px;font-weight:900;font-size:13px;background:var(--soft);border-radius:999px;padding:4px 10px}
+.lvl .stripe{position:absolute;left:0;top:0;bottom:0;width:8px}
+.lvl .faces{display:flex;margin-top:8px;min-height:34px}
+.lvl .faces svg{width:34px;height:34px;margin-right:-8px;border-radius:50%;border:2px solid #fff}
+.tag{display:inline-block;font-size:11px;font-weight:900;padding:3px 8px;border-radius:999px;background:#ffe0ef;color:#c42c7a;margin-top:4px}
+.sect{font-weight:900;font-size:15px;margin:18px 0 8px;opacity:.8;text-transform:uppercase;letter-spacing:.06em}
+.banner{background:linear-gradient(90deg,#ff7ac0,#9b6bff);color:#fff;border-radius:18px;padding:12px 14px;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.banner .btn{margin-left:auto}
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.gcard{background:#fff;border-radius:18px;padding:8px;text-align:center;box-shadow:0 4px 12px #7b3fe41a;position:relative}
+.gcard svg{width:100%;height:auto;border-radius:14px}
+.gcard .nm{font-weight:900;font-size:15px}
+.gcard .meta{font-size:12px;font-weight:700;opacity:.7}
+.ready{position:absolute;top:6px;right:6px;background:#ffd84d;border-radius:999px;font-size:11px;font-weight:900;padding:3px 7px}
+.events{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ev{background:#fff;border-radius:20px;padding:12px;box-shadow:0 4px 12px #7b3fe41a}
+.ev h3{font-size:18px;font-weight:900;margin-bottom:8px}
+.sk{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:14px;padding:10px;margin-top:8px}
+.sk .n{flex:1;font-weight:800}
+.sk .m{font-size:12px;font-weight:700;opacity:.7}
+/* practice */
+.stage{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px #7b3fe424;position:relative}
+.stage svg{display:block;width:100%;height:auto}
+.stage .lbl{position:absolute;left:10px;top:10px;background:#ffffffd9;border-radius:999px;padding:5px 11px;font-weight:900;font-size:14px}
+.stage .ctrl{position:absolute;right:10px;top:10px;display:flex;gap:6px}
+.who{display:flex;align-items:center;gap:10px;background:#fff;border-radius:18px;padding:8px 12px;margin-top:10px;box-shadow:0 4px 12px #7b3fe41a}
+.who svg{width:54px;height:54px;border-radius:50%}
+.who .nm{font-weight:900;font-size:18px}
+.bar{height:12px;background:#eee6fb;border-radius:99px;overflow:hidden;margin-top:4px;min-width:140px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));border-radius:99px;transition:width .5s}
+.line{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end;max-width:45%}
+.line svg{width:30px;height:30px;border-radius:50%;opacity:.55}
+.line svg.cur{opacity:1;outline:3px solid var(--pink)}
+.line svg.dn{opacity:.25}
+.ask{margin-top:12px;background:#fff;border-radius:20px;padding:14px;box-shadow:0 4px 12px #7b3fe41a;min-height:90px}
+.ask .q{font-weight:900;font-size:18px;margin-bottom:10px;text-align:center}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.opt{background:var(--soft);border-radius:16px;padding:16px 12px;font-weight:800;font-size:17px;box-shadow:0 4px 0 #ddd0f5}
+.opt:active{transform:translateY(3px);box-shadow:0 1px 0 #ddd0f5}
+.opt.right{background:#d8f8e7;box-shadow:0 4px 0 #9fe0bf}
+.opt.wrong{background:#ffe0e6;box-shadow:0 4px 0 #f5a9b8}
+.opt.dim{opacity:.45}
+.msg{text-align:center;font-weight:800;font-size:17px;margin:4px 0 10px}
+.msg.ok{color:var(--ok)}.msg.no{color:var(--bad)}
+.coach{display:inline-block;background:#fff3c4;border-radius:14px;padding:6px 12px;font-weight:800;margin:4px auto 8px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+/* modal */
+#modal{position:fixed;inset:0;background:#2b1d4e88;display:none;align-items:center;justify-content:center;padding:14px;z-index:20;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#modal.on{display:flex}
+.mbox{background:#fff;border-radius:26px;max-width:560px;width:100%;max-height:92vh;overflow:auto;padding:18px;box-shadow:0 20px 50px #2b1d4e55;animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.newtop{display:flex;gap:14px;align-items:center}
+.newtop svg{width:130px;height:auto;border-radius:20px;flex:none}
+.newtop h2{font-size:26px;font-weight:900}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:15px;margin-top:6px}
+.facts b{opacity:.6;font-weight:800}
+.place{display:grid;gap:8px;margin-top:14px}
+.place button{display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:16px;padding:12px 14px;font-weight:800;font-size:16px;text-align:left}
+.place button .a{margin-left:auto;font-size:13px;opacity:.7}
+.place button.lock{opacity:.45}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;z-index:40;max-width:90%;text-align:center;animation:pop .25s}
+.conf{position:fixed;pointer-events:none;z-index:50;font-size:26px;animation:fall 1.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(70vh) rotate(540deg);opacity:0}}
+.pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:20px}
+.pick button{background:#fff;border-radius:24px;padding:22px 10px;font-size:22px;font-weight:900;box-shadow:0 6px 0 #d7c8f6}
+.pick button span{display:block;font-size:52px}
+.skl{display:flex;align-items:center;gap:8px;margin:5px 0;font-weight:700;font-size:14px}
+.skl .bar{flex:1}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}.tab{background:#fff;border-radius:16px;padding:8px 14px;font-weight:800;box-shadow:0 2px 8px #7b3fe41a}.tab small{display:block;font-size:11px;opacity:.7}.tab.on{background:var(--purple);color:#fff}
+.mrow{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;font-weight:700;font-size:14px}.mrow:nth-child(odd){background:var(--soft)}.mrow .r{margin-left:auto;font-weight:900;font-size:16px;white-space:nowrap;padding-left:8px}.mrow.own{background:#fff1c9!important}.mrow svg{width:30px;height:30px;border-radius:50%;flex:none}
+.podium{display:flex;gap:10px;justify-content:center;align-items:flex-end;margin-top:6px}.pd{background:#fff;border-radius:20px;padding:10px;text-align:center;width:150px;box-shadow:0 6px 18px #7b3fe41f}.pd svg{width:80px;border-radius:50%}.pd .nm{font-weight:900}.pd .meta{font-size:11px;opacity:.6;font-weight:700}.pd .sc{font-weight:900;font-size:20px;color:var(--purple)}.pd.p1{padding-bottom:34px;border:3px solid #ffd84d}.pd.p2{padding-bottom:20px}
+table.res{width:100%;border-collapse:collapse;font-size:14px}table.res td,table.res th{padding:6px;text-align:center;border-bottom:1px solid #eee6fb}table.res td:first-child{text-align:left}
+.hint{font-size:13px;opacity:.7;font-weight:700;text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"><div class="mbox" id="mbox"></div></div>
+<script>
+"use strict";
+/* ============================ DATA ============================ */
+const COACHES=[{n:'Dad',e:'🧢'},{n:'Mom',e:'🌸'},{n:'Emma',e:'🦄'},{n:'Nora',e:'🐰'}];
+const LEVELS=[
+ {id:'mini',name:'Mini Flippers',em:'🐣',min:3,max:4,entry:1,set:'mini',desc:'Toddler & preschool tumbling',col:'#ff9ccc'},
+ {id:'kinder',name:'Kinder Kartwheelers',em:'🌈',min:5,max:6,entry:1,set:'kinder',desc:'Kindergarten class',col:'#ffc94d'},
+ {id:'sparkle',name:'Sparkle Starters',em:'✨',min:7,max:10,entry:1,set:'sparkle',desc:'Beginner class',col:'#5fd6a6'},
+ {id:'stars',name:'Shooting Stars',em:'🌠',min:11,max:16,entry:1,set:'sparkle',desc:'Beginner class for big kids',col:'#4cc3e8'},
+ {id:'rockets',name:'Rising Rockets',em:'🚀',min:7,max:16,set:'rockets',desc:'Intermediate class',col:'#6f9bff'},
+ {id:'amethyst',name:'Team Amethyst',em:'💜',min:7,max:16,team:1,set:'amethyst',desc:'Competition team · Level 1',col:'#a874ff'},
+ {id:'sapphire',name:'Team Sapphire',em:'💙',min:9,max:16,team:1,set:'sapphire',desc:'Competition team · Level 2',col:'#3f6bff'},
+ {id:'ruby',name:'Team Ruby',em:'❤️',min:11,max:16,team:1,set:'ruby',desc:'Competition team · Level 3',col:'#ff3d5e'},
+ {id:'diamond',name:'Team Diamond',em:'💎',min:13,max:16,team:1,set:'diamond',desc:'Elite competition team',col:'#36cfe6'}
+];
+const LV=Object.fromEntries(LEVELS.map(l=>[l.id,l]));
+const PROMOTE_NEED=6;
+const EVENTS=[{id:'bars',n:'Bars',e:'🤸'},{id:'beam',n:'Beam',e:'🩰'},{id:'vault',n:'Vault',e:'🚀'},{id:'floor',n:'Floor',e:'⭐'}];
+
+const FAULTS={
+ toes:{bad:"Didn't point her toes",good:"Pointed her toes",fix:"Point those toes like a ballerina!"},
+ knees:{bad:"Bent her knees",good:"Kept her legs straight",fix:"Squeeze those knees straight!"},
+ arms:{bad:"Bent her arms",good:"Kept her arms straight",fix:"Lock those elbows — strong arms!"},
+ together:{bad:"Let her legs come apart",good:"Kept her legs together",fix:"Glue those legs together!"},
+ head:{bad:"Let her head drop out of line",good:"Kept her head in line",fix:"Keep your head between your arms!"},
+ lookdown:{bad:"Looked down at her feet",good:"Kept her eyes forward",fix:"Eyes up — look at the end of the beam!"},
+ chin:{bad:"Forgot to tuck her chin",good:"Tucked her chin to her chest",fix:"Chin to chest, like you're holding an orange!"},
+ landing:{bad:"Took a step on the landing",good:"Stuck her landing",fix:"Bend your knees and STICK it!"},
+ ears:{bad:"Didn't reach her arms by her ears",good:"Reached her arms up by her ears",fix:"Squeeze your ears with your arms!"},
+ finish:{bad:"Forgot to finish with her arms up",good:"Finished with her arms up and a smile",fix:"Finish strong — arms up and smile!"},
+ split:{bad:"Didn't open into a full split",good:"Hit a full split",fix:"Reach those legs wide apart!"},
+ height:{bad:"Didn't get enough height",good:"Got great height",fix:"Jump up, up, UP!"},
+ balance:{bad:"Wobbled and waved her arms",good:"Stayed steady and balanced",fix:"Tight tummy — stay steady!"},
+ tuck:{bad:"Didn't pull into a tight tuck",good:"Pulled into a tight tuck",fix:"Knees to your chest — tight ball!"},
+ hold:{bad:"Didn't hold it long enough",good:"Held it for a full count",fix:"Hold it… 1… 2… 3!"},
+ releve:{bad:"Dropped her heels down",good:"Stayed up high on her toes",fix:"Up on your tippy toes!"},
+ tarms:{bad:"Dropped her arms down",good:"Held her arms out like airplane wings",fix:"Airplane arms out wide!"},
+ cast:{bad:"Didn't cast high enough",good:"Cast up nice and high",fix:"Push the bar away and swing those legs up!"}
+};
+
+/* ============================ RANDOM ============================ */
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+
+const FIRST=("Abigail Addison Adeline Aisha Alana Alice Alina Amara Amelia Ana Annie Aria Ariana Ava Avery Bailey Bella Bianca Blair Brielle Brooke Callie Camila Caroline Charlotte Chloe Clara Cora Daisy Delilah Eden Eliana Eliza Ella Ellie Eloise Elsie Emery Emilia Esme Eva Evelyn Faith Fiona Freya Gabriella Gemma Georgia Grace Gracie Hadley Hailey Hannah Harper Hazel Hope Imani Isabel Isla Ivy Jade Jane Jasmine Josie Julia June Juniper Kaia Kali Kate Kayla Keira Kennedy Kenzie Kinsley Lacey Layla Leah Lena Lila Lily Lola Lucy Luna Lydia Mabel Mackenzie Madison Mae Maeve Maggie Maisie Malia Margot Maria Mariana Maya Mckenna Mia Mila Millie Molly Naomi Natalie Nina Noelle Nova Olive Olivia Paige Penelope Piper Poppy Quinn Raegan Reese Riley Rosalie Rose Sadie Sage Samantha Sara Savannah Scarlett Selena Serena Sienna Sloane Sofia Sophie Stella Summer Sydney Talia Tessa Valentina Vera Violet Willa Willow Winnie Wren Zara Zoe Zuri Ainsley Brynn Celeste Dahlia Elodie Felicity Greta Harlow Iris Kiara Lainey Marlee Navy Oaklee Priya Remi Saylor Tatum Vivian Yara").split(' ');
+const LAST=("Anderson Baker Bennett Brooks Carter Chen Clark Collins Cooper Davis Diaz Evans Fisher Flores Foster Garcia Gray Green Hall Harris Hayes Hughes Jensen Johnson Kim King Larsen Lee Lewis Lopez Martin Mitchell Morgan Murphy Nelson Nguyen Olsen Parker Patel Perez Peterson Price Reed Rivera Roberts Ross Russell Sanders Scott Shaw Taylor Thompson Turner Walker Ward Watson White Williams Wilson Wright Young Ramos Bishop Hart Lund Cho Silva").split(' ');
+const HAIR=[['Golden Blonde','#e9c25d'],['Platinum Blonde','#f3e6b8'],['Strawberry Blonde','#eaa46a'],['Copper Red','#c9572b'],['Auburn','#8e3a1e'],['Honey Brown','#b9844a'],['Light Brown','#a2714a'],['Chestnut Brown','#74462a'],['Dark Brown','#4a2c1b'],['Jet Black','#1c1614']];
+const STYLES=['Ponytail','High Bun','Pigtails','Braid','Short Bob','Curly Puff','Space Buns','Long & Wavy'];
+const SKIN=['#fde4d0','#f7d0b0','#ecb991','#d69d71','#b57d52','#8d5c3b','#6a4029'];
+const EYES=[['Blue','#3b7fd4'],['Green','#3d9a58'],['Hazel','#8b7a38'],['Brown','#6b3e1f'],['Dark Brown','#3b2213'],['Gray','#7c8c99']];
+const LEOS=[['Hot Pink','#ec3c8f'],['Purple','#7b3fe4'],['Sky Blue','#1fa7e0'],['Teal','#13b3a0'],['Orange','#f57a1d'],['Red','#e63946'],['Lavender','#a98bf0'],['Navy','#2b3f9e'],['Lime','#55c23a'],['Gold','#e0aa12'],['Magenta','#c026d3'],['Coral','#ff6f61'],['Turquoise','#20c4d8'],['Black Sparkle','#2a2340']];
+const ACC=['#ffffff','#ffd84d','#ff9ccc','#9be7ff','#c5a6ff','#ff6b6b','#7ee2a8'];
+const TRAITS=['Brave','Giggly','Shy at first','Super focused','Bouncy','Silly','Determined','Calm','Chatty','Kind-hearted','Fearless','Creative','Dramatic','Hard-working','Cheerful','Curious'];
+const ANIMALS=['horses','puppies','bunnies','dolphins','kittens','penguins','llamas','sloths','owls','foxes','koalas','pandas','hedgehogs','otters'];
+const SNACKS=['strawberries','popcorn','goldfish crackers','mac and cheese','apple slices','cheese sticks','grapes','pretzels','mango','watermelon','string cheese','banana bread','fruit snacks','blueberries'];
+const DREAMS=['go to the Olympics','do a back handspring','win a gold medal','be a gymnastics coach','do a double back','be on Team Diamond','do a cartwheel on the beam','do a split'];
+
+/* ============================ SAVE ============================ */
+let COACH=null,S=null;
+const KEY=n=>'sga_save_v1_'+n;
+function load(n){try{const t=localStorage.getItem(KEY(n));return t?JSON.parse(t):null}catch(e){return null}}
+let syncHook=null;
+function saveLocal(){if(!COACH||!S)return;try{localStorage.setItem(KEY(COACH),JSON.stringify(S))}catch(e){}}
+function save(){if(!COACH||!S)return;S.u=Date.now();saveLocal();if(syncHook)syncHook()}
+function newSave(){const s={v:1,girls:[],queue:[],used:[],nid:1,play:0,nextArr:1200,nextSea:1800,pts:0,season:1,hof:[],st:{ok:0,no:0,mast:0}};S=s;for(let i=0;i<20;i++)s.queue.push(makeGirl());return s}
+
+function makeGirl(){
+ const used=new Set(S.used);let pool=FIRST.filter(n=>!used.has(n));let first;
+ if(pool.length)first=pick(pool);else first=pick(FIRST);
+ S.used.push(first);
+ const h=pick(HAIR),e=pick(EYES),l=pick(LEOS);
+ return{id:S.nid++,first,last:pick(LAST),age:3+rnd(14),hair:h[0],hairC:h[1],style:pick(STYLES),eye:e[0],eyeC:e[1],
+  skin:pick(SKIN),leo:l[0],leoC:l[1],acc:pick(ACC),freck:Math.random()<.25,trait:pick(TRAITS),fav:pick(EVENTS).n,
+  animal:pick(ANIMALS),snack:pick(SNACKS),dream:pick(DREAMS),talent:Math.random(),lvl:null,sk:{},joined:S.season};
+}
+const G=id=>S.girls.find(g=>g.id===id);
+const fullName=g=>g.first+' '+g.last;
+
+/* ============================ PORTRAIT ============================ */
+function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=(n>>16)+amt,g=((n>>8)&255)+amt,b=(n&255)+amt;r=Math.max(0,Math.min(255,r));g=Math.max(0,Math.min(255,g));b=Math.max(0,Math.min(255,b));return'#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)}
+function portrait(g){
+ const hc=g.hairC,sk=g.skin,ac=g.acc,lc=g.leoC,hd=shade(hc,-25);
+ let back='',front='';
+ switch(g.style){
+  case'Ponytail':back=`<path d="M68 30 Q96 40 86 84 Q80 66 68 50Z" fill="${hc}" stroke="${hd}" stroke-width="1"/>`;front=`<circle cx="70" cy="32" r="4" fill="${ac}"/>`;break;
+  case'High Bun':back=`<circle cx="50" cy="19" r="12" fill="${hc}" stroke="${hd}" stroke-width="1"/>`;front=`<rect x="40" y="27" width="20" height="5" rx="2.5" fill="${ac}"/>`;break;
+  case'Pigtails':back=`<ellipse cx="22" cy="54" rx="9" ry="16" fill="${hc}" stroke="${hd}"/><ellipse cx="78" cy="54" rx="9" ry="16" fill="${hc}" stroke="${hd}"/>`;front=`<circle cx="26" cy="40" r="4" fill="${ac}"/><circle cx="74" cy="40" r="4" fill="${ac}"/>`;break;
+  case'Braid':back=[0,1,2,3,4].map(i=>`<ellipse cx="${71+i*1.5}" cy="${58+i*9}" rx="6" ry="6.5" fill="${hc}" stroke="${hd}"/>`).join('');front=`<circle cx="77" cy="102" r="3.5" fill="${ac}"/>`;break;
+  case'Short Bob':back=`<path d="M23 52 Q20 20 50 19 Q80 20 77 52 L78 70 Q71 75 67 68 L33 68 Q29 75 22 70Z" fill="${hc}" stroke="${hd}"/>`;front=`<circle cx="30" cy="38" r="3.5" fill="${ac}"/>`;break;
+  case'Curly Puff':back=`<g fill="${hc}" stroke="${hd}">`+[[50,15,13],[34,20,11],[66,20,11],[25,33,10],[75,33,10]].map(c=>`<circle cx="${c[0]}" cy="${c[1]}" r="${c[2]}"/>`).join('')+'</g>';front=`<rect x="34" y="27" width="32" height="5" rx="2.5" fill="${ac}"/>`;break;
+  case'Space Buns':back=`<circle cx="29" cy="21" r="10" fill="${hc}" stroke="${hd}"/><circle cx="71" cy="21" r="10" fill="${hc}" stroke="${hd}"/>`;front=`<circle cx="37" cy="28" r="3" fill="${ac}"/><circle cx="63" cy="28" r="3" fill="${ac}"/>`;break;
+  default:back=`<path d="M25 40 Q18 72 27 96 Q38 90 36 72 L64 72 Q62 90 73 96 Q82 72 75 40Z" fill="${hc}" stroke="${hd}"/>`;front=`<path d="M64 31 l7 -5 l0 10z M64 31 l-7 -5 l0 10z" fill="${ac}"/>`;
+ }
+ const young=g.age<=6,er=young?5:4.3;
+ const eye=(x)=>`<ellipse cx="${x}" cy="55" rx="${er}" ry="${er*1.15}" fill="#fff"/><circle cx="${x}" cy="55.6" r="${er*.72}" fill="${g.eyeC}"/><circle cx="${x}" cy="55.8" r="${er*.36}" fill="#1a1020"/><circle cx="${x+1.3}" cy="54.2" r="1" fill="#fff"/><path d="M${x-er} ${55-er*1.05} q${er} -2.6 ${er*2} 0" stroke="#2a1a20" stroke-width="1.2" fill="none"/>`;
+ const fr=g.freck?[[36,61],[39,63],[34,64],[61,63],[64,61],[66,64]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r=".9" fill="${shade(sk,-55)}"/>`).join(''):'';
+ return `<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="110" fill="${shade(lc,95)}"/>
+ <circle cx="84" cy="14" r="2" fill="#fff"/><circle cx="14" cy="22" r="1.5" fill="#fff"/>
+ ${back}
+ <rect x="44" y="70" width="12" height="12" fill="${shade(sk,-12)}"/>
+ <path d="M16 112 Q18 84 42 79 L58 79 Q82 84 84 112Z" fill="${lc}"/>
+ <path d="M42 79 Q50 88 58 79" fill="${sk}"/>
+ <circle cx="30" cy="96" r="1.6" fill="#fff" opacity=".8"/><circle cx="68" cy="92" r="1.3" fill="#fff" opacity=".8"/><circle cx="58" cy="102" r="1.2" fill="#fff" opacity=".8"/>
+ <circle cx="27.5" cy="56" r="4" fill="${shade(sk,-12)}"/><circle cx="72.5" cy="56" r="4" fill="${shade(sk,-12)}"/>
+ <circle cx="50" cy="53" r="${young?23.5:22}" fill="${sk}"/>
+ <path d="M26 54 Q23 22 50 22 Q77 22 74 54 Q71 38 60 33 Q52 40 38 36 Q30 41 26 54Z" fill="${hc}" stroke="${hd}" stroke-width="1"/>
+ ${front}${eye(41)}${eye(59)}
+ <circle cx="35" cy="63" r="3.6" fill="#ff8fa8" opacity=".4"/><circle cx="65" cy="63" r="3.6" fill="#ff8fa8" opacity=".4"/>${fr}
+ <path d="M48.5 61 q1.5 1.4 3 0" stroke="${shade(sk,-45)}" stroke-width="1.2" fill="none"/>
+ <path d="M43 66 Q50 72 57 66" stroke="#b23a5a" stroke-width="2" fill="none" stroke-linecap="round"/>
+ </svg>`;
+}
+const face=g=>portrait(g);
+
+/* ============================ FIGURE ENGINE ============================ */
+const R=Math.PI/180,Dv=a=>[Math.sin(a*R),-Math.cos(a*R)];
+const NUM=['x','h','rot','tL','kL','tR','kR','aL','eL','aR','eR','hd','fL','fR','g','b','bx','by','tw'];
+const DEF={x:0,h:38,rot:0,tL:0,kL:0,tR:0,kR:0,aL:0,eL:0,aR:0,eR:0,hd:0,fL:90,fR:90,g:1,b:0,bx:0,by:0,tw:0};
+const gScale=age=>0.62+(Math.min(16,age)-3)/13*0.38;
+
+function scene(ev,variant,bar){
+ const sc={ev,variant,bar:null,tbl:null};
+ if(ev==='beam')sc.ground=x=>(x>28&&x<372)?135:200;
+ else if(ev==='bars'){sc.ground=x=>x>255?192:200;sc.bar=bar==='high'?{x:235,y:95}:{x:165,y:125};}
+ else if(ev==='vault'){
+  if(variant==='none')sc.ground=x=>x>175?190:200;
+  else if(variant==='mats'){sc.ground=x=>(x>195&&x<372)?160:200;sc.tbl={x:203,y:160};}
+  else{sc.ground=x=>(x>189&&x<223)?147:(x>238?190:200);sc.tbl={x:204,y:147};}
+ } else sc.ground=x=>200;
+ return sc;
+}
+function solve(p,s,sc){
+ const L={TO:26*s,TH:20*s,SH:20*s,FT:6.5*s,UA:15*s,FA:14*s,HR:4.4+3*s};
+ let sx=Math.cos(2*Math.PI*p.tw);if(Math.abs(sx)<0.06)sx=sx<0?-0.06:0.06;
+ const th=p.rot,add=(a,ang,len)=>{const d=Dv(ang);return[a[0]+d[0]*len,a[1]+d[1]*len]};
+ const P={};P.hip=[0,0];P.neck=add(P.hip,th,L.TO);P.sh=add(P.neck,th+180,2.2*s);
+ P.head=add(P.neck,th+p.hd*0.5,L.HR+1.2*s);
+ for(const sd of['L','R']){
+  const td=th+180-p['t'+sd];P['k'+sd]=add(P.hip,td,L.TH);const shd=td+p['k'+sd];P['a'+sd]=add(P['k'+sd],shd,L.SH);P['t'+sd]=add(P['a'+sd],shd-p['f'+sd],L.FT);
+  const ud=th+180-p['a'+sd];P['e'+sd]=add(P.sh,ud,L.UA);P['h'+sd]=add(P['e'+sd],ud-p['e'+sd],L.FA);
+ }
+ const keys=Object.keys(P);
+ for(const k of keys)P[k][0]*=sx;
+ let hx=p.x,hy=sc.ground(p.x)-p.h;
+ const pts=()=>keys.map(k=>[P[k][0]+hx,P[k][1]+hy]);
+ if(p.g>0.001){let low=-1e9;for(const k of keys){let y=P[k][1]+hy;if(k==='head')y+=L.HR;if(k==='neck'||k==='sh')y+=4*s;if(y>low)low=y}hy+=p.g*(sc.ground(p.x)-low)}
+ if(p.b>0.001){const hx2=P.hL[0]+hx,hy2=P.hL[1]+hy;hx+=p.b*(p.bx-hx2);hy+=p.b*(p.by-hy2)}
+ const W={};for(const k of keys)W[k]=[P[k][0]+hx,P[k][1]+hy];
+ W.sx=sx;W.L=L;W.ha=th+p.hd;W.s=s;return W;
+}
+
+/* ---- builder helpers ---- */
+function mkB(x,dir){return{F:[],x0:x,r0:0,t0:dir<0?0.5:0,dir}}
+function P(B,dt,o={}){const f=Object.assign({},DEF,o);f.dt=dt;f.x=o.ax!=null?o.ax:B.x0+B.dir*(o.dx||0);f.rot=B.r0+(o.r||0);f.tw=B.t0+(o.t||0);delete f.dx;delete f.r;delete f.t;delete f.ax;B.F.push(f);return f}
+function commit(B){const l=B.F[B.F.length-1];B.x0=l.x;B.r0=l.rot;B.t0=l.tw}
+const UP={aL:172,aR:172,up:1},SAL={aL:160,aR:160,fin:1},PT={fL:6,fR:6,pt:1},SQ={tL:65,kL:85,tR:65,kR:85};
+const TUCK={tL:140,kL:150,tR:140,kR:150,aL:70,aR:70,tk:1};
+const SHP={tuck:{...TUCK,...PT,tog:1},pike:{tL:125,tR:125,aL:120,aR:120,st:1,tog:1,...PT},layout:{tL:-6,tR:-6,aL:20,aR:20,st:1,tog:1,...PT}};
+const LUNGE={tL:45,kL:30,tR:-8,...UP};
+function bStart(B){P(B,0,{});P(B,450,{...UP});commit(B)}
+function bEnd(B){P(B,420,{...SAL});P(B,850,{...SAL});commit(B)}
+
+function bRoll(B,back){
+ const SQR={tL:115,kL:140,tR:115,kR:140};
+ if(!back){P(B,450,{dx:4,r:30,...SQR,aL:100,aR:100});
+  [110,200,290].forEach((r,i)=>P(B,320,{dx:18+i*17,r,...TUCK,...PT,aL:60,aR:60}));
+  P(B,380,{dx:72,r:345,...SQR,aL:100,aR:100});P(B,420,{dx:75,r:360,...UP});}
+ else{P(B,450,{r:20,...SQR,aL:160,aR:160,eL:110,eR:110});
+  [-60,-150,-240].forEach((r,i)=>P(B,330,{dx:-12-17*i,r,...TUCK,...PT,aL:165,aR:165,eL:110,eR:110}));
+  P(B,380,{dx:-62,r:-330,...SQR,aL:120,aR:120});P(B,420,{dx:-64,r:-360,...UP});}
+ commit(B);
+}
+function bCart(B,air){
+ const A=air?{aL:95,aR:95}:{aL:178,aR:178,up:1,ast:1};const H=(h)=>air?{g:0,h,air:1}:{};
+ P(B,380,{dx:6,r:6,...LUNGE});
+ P(B,300,{dx:24,r:85,tL:65,tR:-65,...A,...(air?{}:{aL:140,aR:140}),st:1,...PT,...H(66)});
+ P(B,300,{dx:46,r:180,tL:72,tR:-72,...A,st:1,...PT,...H(80)});
+ P(B,300,{dx:68,r:275,tL:65,tR:-65,...A,st:1,...PT,...H(66)});
+ P(B,380,{dx:82,r:360,tL:40,kL:30,tR:-10,...UP});
+ commit(B);
+}
+function bRO(B,k=1){
+ P(B,380,{dx:6*k,r:6,...LUNGE});
+ P(B,280,{dx:24*k,r:85,tL:60,tR:-60,...UP,aL:140,aR:140,st:1,ast:1,...PT});
+ P(B,280,{dx:44*k,r:180,t:0.2,tL:4,tR:-4,aL:178,aR:178,up:1,st:1,ast:1,tog:1,...PT});
+ P(B,260,{dx:62*k,r:290,t:0.45,g:0,h:62,tL:3,tR:-3,aL:165,aR:165,st:1,tog:1,...PT,air:1});
+ P(B,260,{dx:72*k,r:360,t:0.5,...SQ,aL:150,aR:150,land:1});
+ commit(B);B.dir*=-1;
+}
+function bBHS(B,quick){
+ if(!quick)P(B,300,{r:-4,tL:70,kL:80,tR:70,kR:80,aL:25,aR:25});
+ P(B,240,{dx:-14,r:-70,g:0,h:66,tL:-10,tR:-10,...UP,st:1,ast:1,tog:1,...PT,air:1});
+ P(B,230,{dx:-30,r:-180,tL:-15,tR:-15,aL:180,aR:180,up:1,st:1,ast:1,tog:1,...PT});
+ P(B,230,{dx:-44,r:-285,g:0,h:60,tL:22,tR:22,aL:160,aR:160,st:1,tog:1,...PT,air:1});
+ P(B,260,{dx:-52,r:-360,...SQ,aL:120,aR:120,land:1});
+ commit(B);
+}
+function bHS(B,hold,after){
+ P(B,380,{dx:6,r:8,...LUNGE});
+ P(B,380,{dx:16,r:95,tL:20,tR:-55,...UP,aL:140,aR:140,st:1,ast:1,...PT});
+ const HS={dx:22,r:180,aL:180,aR:180,up:1,st:1,ast:1,tog:1,...PT};
+ P(B,380,HS);P(B,hold,{...HS,hold:1});
+ if(after==='roll'){
+  P(B,320,{dx:30,r:255,...TUCK,...PT,aL:150,aR:150});P(B,320,{dx:44,r:315,...TUCK,...PT,aL:80,aR:80});
+  P(B,380,{dx:52,r:350,tL:115,kL:140,tR:115,kR:140,aL:100,aR:100});P(B,400,{dx:54,r:360,...UP});
+ }else{P(B,380,{dx:16,r:95,tL:20,tR:-55,...UP,st:1,...PT});P(B,380,{dx:6,r:8,...LUNGE});P(B,350,{dx:4,r:0,...UP});}
+ commit(B);
+}
+function bWalkover(B,back){
+ if(!back){
+  P(B,380,{dx:6,r:8,...LUNGE});
+  P(B,380,{dx:18,r:95,tL:20,tR:-70,...UP,aL:140,aR:140,st:1,ast:1,...PT});
+  P(B,380,{dx:30,r:180,tL:85,tR:-85,aL:178,aR:178,up:1,st:1,ast:1,sp:1,...PT});
+  P(B,380,{dx:44,r:270,tL:90,tR:-60,...UP,st:1,sp:1,...PT});
+  P(B,400,{dx:54,r:350,tL:70,tR:-4,...UP,st:1,...PT,fR:90});
+  P(B,350,{dx:58,r:360,...UP});
+ }else{
+  P(B,450,{r:-15,tL:45,...UP,st:1,...PT,fR:90});
+  P(B,400,{dx:-12,r:-95,tL:70,tR:-10,...UP,aL:225,aR:225,st:1,ast:1,...PT});
+  P(B,400,{dx:-26,r:-180,tL:85,tR:-85,aL:178,aR:178,up:1,st:1,ast:1,sp:1,...PT});
+  P(B,400,{dx:-40,r:-270,tL:75,tR:-90,...UP,st:1,sp:1,...PT});
+  P(B,400,{dx:-50,r:-350,tL:20,tR:-60,...UP,st:1,...PT,fL:90});
+  P(B,350,{dx:-54,r:-360,...UP});
+ }
+ commit(B);
+}
+function bFHS(B){
+ P(B,380,{dx:8,r:8,...LUNGE});
+ P(B,240,{dx:24,r:100,tL:15,tR:-45,...UP,aL:135,aR:135,st:1,ast:1,...PT});
+ P(B,230,{dx:40,r:180,aL:178,aR:178,up:1,st:1,ast:1,tog:1,...PT});
+ P(B,240,{dx:58,r:275,g:0,h:66,tL:-12,tR:-12,...UP,st:1,tog:1,...PT,air:1});
+ P(B,280,{dx:70,r:360,...SQ,aL:150,aR:150,land:1});
+ commit(B);
+}
+function bFlip(B,o){
+ const s=o.back?-1:1,tot=360*o.rots,peak=o.peak||112,tw=o.tw||0,trav=o.trav||46;
+ if(o.stand)P(B,320,{...SQ,aL:20,aR:20});
+ P(B,200,{dx:s*6,r:s*25,g:0,h:72,tL:-5,tR:-5,...UP,st:1,tog:1,...PT,air:1});
+ const n=3*o.rots+1;
+ for(let i=1;i<=n;i++){const fr=i/(n+1);P(B,o.rots>1?150:175,{dx:s*(6+trav*fr),r:s*(25+(tot-70)*fr),g:0,h:72+(peak-72)*Math.sin(Math.PI*fr),t:tw*fr,...SHP[o.shape],air:1})}
+ P(B,180,{dx:s*(trav+8),r:s*(tot-35),g:0,h:58,t:tw,tL:5,tR:5,aL:150,aR:150,st:1,tog:1,...PT,air:1});
+ P(B,240,{dx:s*(trav+12),r:s*tot,t:tw,...SQ,aL:120,aR:120,land:1});
+ commit(B);
+}
+function bLeap(B,sw,beam){
+ const st=beam?0.75:1;
+ P(B,230,{dx:12*st,tL:35,kL:45,tR:-25,kR:60,aL:-20,aR:40,fL:70});
+ P(B,230,{dx:26*st,tL:-25,kL:60,tR:35,kR:45,aL:40,aR:-20});
+ P(B,200,{dx:40*st,tL:45,kL:20,tR:-30,aL:110,aR:80});
+ if(sw){P(B,170,{dx:50*st,g:0,h:68,tL:70,tR:-15,...PT,st:1,aL:150,aR:150,air:1});P(B,170,{dx:58*st,g:0,h:78,tL:-30,tR:60,...PT,st:1,aL:150,aR:150,air:1});}
+ else P(B,170,{dx:52*st,g:0,h:66,tL:65,tR:-55,...PT,st:1,sp:1,aL:120,aR:90,air:1});
+ const SP={tL:95,tR:-95,...PT,st:1,sp:1,aL:100,aR:80,air:1,g:0};
+ P(B,260,{dx:66*st,h:84,...SP});P(B,120,{dx:72*st,h:82,...SP});
+ P(B,220,{dx:86*st,g:0,h:56,tL:45,tR:-55,...PT,st:1,sp:1,air:1});
+ P(B,260,{dx:96*st,tL:25,kL:30,tR:-30,aL:110,aR:110,land:1});
+ P(B,320,{dx:100*st,...UP});
+ commit(B);
+}
+function bJump(B,shape,ht=86,dx=0){
+ P(B,320,{...SQ,aL:20,aR:20});
+ P(B,200,{dx:dx*.3,g:0,h:68,...UP,st:1,tog:1,...PT,air:1});
+ const S={straight:{...UP,st:1,tog:1,...PT},tuck:{tL:125,kL:145,tR:125,kR:145,aL:95,aR:95,tk:1,...PT},
+  straddle:{tL:95,tR:88,aL:95,aR:95,st:1,...PT},split:{tL:90,tR:-90,aL:130,aR:130,st:1,sp:1,...PT}}[shape];
+ P(B,220,{dx:dx*.6,g:0,h:ht,...S,air:1});P(B,130,{dx:dx*.7,g:0,h:ht-2,...S,air:1});
+ P(B,200,{dx:dx*.9,g:0,h:64,...UP,st:1,tog:1,...PT,air:1});
+ P(B,260,{dx,...SQ,aL:110,aR:110,land:1});P(B,300,{dx,...UP});
+ commit(B);
+}
+function bBeamWalk(B,rel,steps=4){
+ const T={aL:88,aR:92,tarm:1},F=rel?{fL:22,fR:22,rel:1}:{};
+ for(let i=0;i<steps;i++){const odd=i%2;
+  P(B,430,{dx:i*15+7,...(odd?{tL:-14,tR:24,kR:12}:{tL:24,kL:12,tR:-14}),...T,...F});
+  P(B,380,{dx:i*15+15,...T,...F});}
+ commit(B);
+}
+function bArab(B,hold){const A={tR:-75,fR:6,aL:150,aR:110,st:1,pt:1};P(B,500,A);P(B,hold,{...A,hold:1});P(B,420,{});commit(B)}
+function bTurn(B,amt){const T={tL:70,kL:125,fL:10,fR:22,aL:95,aR:95,eL:40,eR:40,rel:1};P(B,380,T);P(B,amt*950,{...T,t:amt});P(B,380,{t:amt});commit(B)}
+
+/* bars */
+const BAR=c=>({b:1,g:0,bx:c.bar.x,by:c.bar.y});
+const STR={st:1,tog:1,...PT};
+function bDrop(B,c,dx,back){const hp=c.hip(B.F[B.F.length-1]);P(B,380,{ax:hp.x+dx,g:1,b:0,...SQ,aL:150,aR:150,land:1});P(B,300,{ax:hp.x+dx,...UP});commit(B)}
+function supEnd(B,c){const l=B.F[B.F.length-1];const t=8+360*Math.round((l.rot-8)/360);const S={...BAR(c),aL:8,aR:8,ast:1,tL:-6,tR:-6,...STR,hd:-8};P(B,450,{...S,r:t-B.r0});P(B,1100,{...S,r:t-B.r0});commit(B)}
+function bHang(B,c,shape,hold){
+ const A={...BAR(c),aL:180,aR:180,ast:1};const S=shape==='tuck'?{tL:110,kL:125,tR:110,kR:125,tk:1,...PT}:{tL:90,tR:90,...STR};
+ P(B,0,{...A,...STR});P(B,500,{...A,...S});P(B,hold,{...A,...S,hold:1});P(B,450,{...A,...STR});bDrop(B,c,4);
+}
+function bSupport(B,c,hold){const S={...BAR(c),r:8,aL:8,aR:8,ast:1,tL:-6,tR:-6,...STR};P(B,0,S);P(B,500,S);P(B,hold,{...S,hold:1});supEnd(B,c)}
+function bPull(B,c){const A={...BAR(c),ast:1};
+ P(B,0,{...A,r:-8,aL:140,aR:140,tL:40,kL:70,tR:40,kR:70});P(B,450,{...A,r:-35,aL:150,aR:150,tL:70,kL:20,tR:-10});
+ P(B,400,{...A,r:-120,aL:90,aR:90,tL:60,tR:60,...STR});P(B,400,{...A,r:-230,aL:30,aR:30,tL:20,tR:20,...STR});
+ P(B,450,{...A,r:-352,aL:8,aR:8,tL:-6,tR:-6,...STR});supEnd(B,c);
+}
+function bCast(B,c,ang){const S={...BAR(c),ast:1,...STR};
+ P(B,0,{...S,r:8,aL:8,aR:8,tL:-6,tR:-6});P(B,300,{...S,r:-4,aL:0,aR:0,tL:35,tR:35});
+ P(B,450,{...S,r:ang,aL:ang,aR:ang,tL:-4,tR:-4,cast:1});P(B,220,{...S,r:ang,aL:ang,aR:ang,tL:-4,tR:-4,cast:1});
+ P(B,450,{...S,r:8,aL:8,aR:8,tL:-6,tR:-6});
+}
+function bHipCircle(B,c){bCast(B,c,45);const S={...BAR(c),ast:1,...STR,aL:8,aR:8,tL:-4,tR:-4};[-80,-170,-260,-352].forEach(r=>P(B,300,{...S,r}));supEnd(B,c)}
+function bClearHip(B,c){const S={...BAR(c),ast:1,...STR};bCast(B,c,172);B.F.pop();const H={...S,aL:174,aR:174,tL:-4,tR:-4};
+ [100,10,-80,-188].forEach(r=>P(B,300,{...H,r}));P(B,400,{...H,r:-188});P(B,500,{...S,r:-352,aL:8,aR:8,tL:-6,tR:-6});supEnd(B,c)}
+function bKip(B,c){const A={...BAR(c),ast:1,...STR};
+ P(B,0,{...A,aL:180,aR:180});P(B,450,{...A,r:-50,aL:180,aR:180,tL:30,tR:30});P(B,350,{...A,r:-25,aL:175,aR:175,tL:150,tR:150});
+ P(B,450,{...A,r:5,aL:60,aR:60,tL:90,tR:90});P(B,400,{...A,r:8,aL:8,aR:8,tL:-6,tR:-6});supEnd(B,c);
+}
+function bGiant(B,c,n,pir){const A={...BAR(c),ast:1,...STR,aL:178,aR:178};
+ P(B,0,{...A,r:178});P(B,500,{...A,r:178});
+ for(let k=0;k<n;k++)[90,0,-90,-182].forEach(r=>P(B,300,{...A,r:r-360*k}));
+ const e=-182-360*(n-1);if(pir)P(B,800,{...A,r:e,t:1});
+ P(B,350,{...A,r:e-90,t:pir?1:0});P(B,400,{...A,r:e-178,t:pir?1:0});P(B,400,{...A,r:e-178,t:pir?1:0});commit(B);bDrop(B,c,4);
+}
+function bFly(B,c,o){const A={...BAR(c),ast:1,...STR,aL:178,aR:178};
+ P(B,0,{...A,r:178});P(B,450,{...A,r:178});P(B,320,{...A,r:90});P(B,320,{...A,r:0});const rel=P(B,300,{...A,r:-75});commit(B);
+ const hp=c.hip(rel),h0=c.ground(hp.x)-hp.y,n=3*o.rots+1,land=Math.max(hp.x+70,285),rot=285+360*(o.rots-1);
+ for(let i=1;i<=n;i++){const fr=i/(n+1);P(B,o.rots>1?150:180,{ax:hp.x+(land-hp.x)*fr,g:0,b:0,h:h0+(40-h0)*fr+14*Math.sin(Math.PI*fr),r:-rot*fr,t:(o.tw||0)*fr,...SHP[o.shape],air:1})}
+ P(B,260,{ax:land,g:1,b:0,r:-rot,t:o.tw||0,...SQ,aL:120,aR:120,land:1});commit(B);
+}
+function bUnderswing(B,c){const A={...BAR(c),ast:1};
+ P(B,0,{...A,r:8,aL:8,aR:8,tL:-6,tR:-6,...STR});P(B,350,{...A,r:-30,aL:60,aR:60,tL:110,tR:110,...STR});
+ P(B,350,{...A,r:-80,aL:150,aR:150,tL:100,tR:100,...STR});const rel=P(B,300,{...A,r:-120,aL:178,aR:178,tL:20,tR:20,...STR});commit(B);
+ const hp=c.hip(rel),h0=c.ground(hp.x)-hp.y,land=Math.max(hp.x+60,275);
+ P(B,260,{ax:hp.x+(land-hp.x)*.4,g:0,b:0,h:h0+20,r:80,aL:170,aR:170,...STR,air:1});
+ P(B,260,{ax:hp.x+(land-hp.x)*.8,g:0,b:0,h:(h0+40)/2+10,r:110,aL:170,aR:170,...STR,air:1});
+ P(B,260,{ax:land,g:1,b:0,r:120,...SQ,aL:120,aR:120,land:1});commit(B);
+}
+
+/* vault */
+function bRun(B,n){for(let i=0;i<n;i++){const odd=i%2;P(B,i?150:0,{dx:(i+1)*16,r:8,hd:-5,fL:60,fR:60,...(odd?{tL:-30,kL:70,tR:45,kR:40,aL:50,aR:-40}:{tL:45,kL:40,tR:-30,kR:70,aL:-40,aR:50})})}commit(B)}
+function bHurdle(B){P(B,200,{dx:18,g:0,h:52,tL:25,tR:15,kR:30,aL:-30,aR:-30,r:5,...PT});P(B,140,{ax:150,tL:10,kL:25,tR:10,kR:25,aL:150,aR:150,r:-4});commit(B)}
+const TBL=c=>({b:1,g:0,bx:c.tbl.x,by:c.tbl.y});
+function bPost(B,c,o){const last=B.F[B.F.length-1],hp=c.hip(last),h0=c.ground(hp.x)-hp.y,s=o.s,tot=180+360*o.rots,n=Math.max(2,3*o.rots+1);
+ for(let i=1;i<=n;i++){const fr=i/(n+1);P(B,o.rots>1?150:180,{ax:hp.x+(o.land-hp.x)*fr,g:0,b:0,h:h0+(40-h0)*fr+55*Math.sin(Math.PI*fr),r:o.R0+s*tot*fr,t:(o.tw||0)*fr,...SHP[o.shape],air:1})}
+ P(B,260,{ax:o.land,g:1,b:0,r:o.R0+s*tot,t:o.tw||0,...SQ,aL:120,aR:120,land:1});commit(B);
+}
+function vFront(B,c,rots,shape,land){bRun(B,7);bHurdle(B);
+ P(B,200,{dx:20,g:0,h:80,r:70,...UP,st:1,tog:1,ast:1,...PT,air:1});
+ P(B,230,{...TBL(c),r:180,aL:180,aR:180,up:1,st:1,tog:1,ast:1,...PT});commit(B);
+ bPost(B,c,{s:1,R0:0,rots,shape,land});bEnd(B);}
+function vYur(B,c,rots,shape,tw,land){bRun(B,5);bRO(B,0.74);B.F[B.F.length-1].x=150;commit(B);
+ P(B,210,{dx:-24,g:0,h:78,r:-80,...UP,st:1,tog:1,ast:1,...PT,air:1});
+ P(B,230,{...TBL(c),r:-180,aL:180,aR:180,up:1,st:1,tog:1,ast:1,...PT});commit(B);
+ bPost(B,c,{s:-1,R0:0,rots,shape,tw,land});bEnd(B);}
+
+/* ============================ SKILLS ============================ */
+// sets: list per skill set; each skill {id,n,ev,v(variant),bar,x,f:[faults],b:(B,c)}
+const SK={};const SETS={};
+function S_(set,id,n,ev,o){const s=Object.assign({id,n,ev,set,x:110,v:'',bar:'low'},o);SK[id]=s;(SETS[set]=SETS[set]||[]).push(s)}
+// Mini Flippers
+S_('mini','m_roll','Forward Roll','floor',{f:['chin','tuck','toes','finish'],b:B=>{bStart(B);bRoll(B);bEnd(B)}});
+S_('mini','m_sj','Straight Jump','floor',{x:180,f:['knees','toes','together','height','ears','landing'],b:B=>{bStart(B);bJump(B,'straight',80);bEnd(B)}});
+S_('mini','m_bw','Beam Walk','beam',{x:120,f:['balance','lookdown','tarms','finish'],b:B=>{bStart(B);bBeamWalk(B,0);bEnd(B)}});
+S_('mini','m_tw','Tiptoe Walk','beam',{x:120,f:['releve','balance','lookdown','tarms'],b:B=>{bStart(B);bBeamWalk(B,1);bEnd(B)}});
+S_('mini','m_th','Tuck Hang','bars',{f:['tuck','arms','toes','hold'],b:(B,c)=>{bHang(B,c,'tuck',1300);bEnd(B)}});
+S_('mini','m_fs','Front Support','bars',{f:['arms','knees','together','toes','hold','head'],b:(B,c)=>{bSupport(B,c,1300)}});
+S_('mini','m_sb','Springboard Bounce','vault',{v:'none',x:10,f:['knees','toes','ears','landing'],b:B=>{bRun(B,6);bHurdle(B);bJump(B,'straight',72,8);bEnd(B)}});
+S_('mini','m_tj','Tuck Jump off Board','vault',{v:'none',x:10,f:['tuck','toes','height','landing'],b:B=>{bRun(B,6);bHurdle(B);bJump(B,'tuck',92,62);bEnd(B)}});
+// Kinder Kartwheelers
+S_('kinder','k_cw','Cartwheel','floor',{f:['knees','toes','arms','ears','finish'],b:B=>{bStart(B);bCart(B);bEnd(B)}});
+S_('kinder','k_br','Backward Roll','floor',{x:250,f:['chin','tuck','toes','finish'],b:B=>{bStart(B);bRoll(B,1);bEnd(B)}});
+S_('kinder','k_ar','Arabesque','beam',{x:170,f:['knees','toes','hold','balance','lookdown'],b:B=>{bStart(B);bArab(B,1400);bEnd(B)}});
+S_('kinder','k_bsj','Straight Jump on Beam','beam',{x:180,f:['knees','toes','together','height','balance'],b:B=>{bStart(B);bJump(B,'straight',76);bEnd(B)}});
+S_('kinder','k_ph','Pike Hang','bars',{f:['knees','toes','together','arms','hold'],b:(B,c)=>{bHang(B,c,'pike',1300);bEnd(B)}});
+S_('kinder','k_po','Pullover','bars',{f:['knees','together','toes','arms'],b:(B,c)=>{bPull(B,c)}});
+S_('kinder','k_vsj','Straight Jump off Board','vault',{v:'none',x:10,f:['knees','toes','together','height','ears','landing'],b:B=>{bRun(B,6);bHurdle(B);bJump(B,'straight',92,62);bEnd(B)}});
+S_('kinder','k_vst','Straddle Jump off Board','vault',{v:'none',x:10,f:['knees','toes','height','landing'],b:B=>{bRun(B,6);bHurdle(B);bJump(B,'straddle',92,62);bEnd(B)}});
+// Beginners (Sparkle Starters & Shooting Stars)
+(SETS.sparkle=SETS.sparkle||[]).push(SK.k_cw);
+S_('sparkle','s_hs','Handstand','floor',{x:150,f:['knees','toes','together','arms','hold','ears'],b:B=>{bStart(B);bHS(B,1300);bEnd(B)}});
+S_('sparkle','s_ro','Round-off','floor',{pre:'k_cw',f:['knees','toes','together','arms','landing'],b:B=>{bStart(B);bRO(B);bEnd(B)}});
+S_('sparkle','s_tj','Tuck Jump on Beam','beam',{x:180,f:['tuck','toes','height','balance'],b:B=>{bStart(B);bJump(B,'tuck',84);bEnd(B)}});
+S_('sparkle','s_ht','Half Turn','beam',{x:180,f:['releve','balance','finish','lookdown'],b:B=>{bStart(B);bTurn(B,.5);bEnd(B)}});
+SETS.sparkle.push(SK.k_po);
+S_('sparkle','s_c','Cast','bars',{f:['knees','toes','together','cast'],b:(B,c)=>{bCast(B,c,45);supEnd(B,c)}});
+S_('sparkle','s_bhc','Back Hip Circle','bars',{pre:'k_po',f:['knees','toes','together','arms'],b:(B,c)=>{bHipCircle(B,c)}});
+S_('sparkle','s_so','Squat On','vault',{v:'table',x:10,f:['tuck','arms','toes','landing'],b:(B,c)=>{bRun(B,7);bHurdle(B);
+  P(B,220,{dx:18,g:0,h:80,r:30,aL:120,aR:120,tL:40,tR:40,...PT,air:1});P(B,230,{...TBL(c),r:35,aL:100,aR:100,ast:1,...TUCK,...PT});
+  P(B,260,{ax:207,g:1,b:0,r:8,...SQ,aL:90,aR:90});P(B,380,{ax:207,...UP});
+  P(B,250,{ax:236,g:0,h:120,...UP,st:1,tog:1,...PT,air:1});P(B,250,{ax:262,g:0,h:78,...UP,st:1,tog:1,...PT,air:1});
+  P(B,260,{ax:276,...SQ,aL:110,aR:110,land:1});commit(B);bEnd(B)}});
+S_('sparkle','s_fb','Handstand Flat-Back','vault',{v:'mats',x:10,f:['knees','toes','together','arms','ears'],b:(B,c)=>{bRun(B,7);bHurdle(B);
+  P(B,220,{dx:18,g:0,h:75,r:80,...UP,st:1,tog:1,ast:1,...PT,air:1});P(B,300,{...TBL(c),r:178,aL:180,aR:180,up:1,st:1,tog:1,ast:1,...PT});
+  P(B,300,{...TBL(c),r:178,aL:180,aR:180,up:1,st:1,tog:1,ast:1,...PT});P(B,420,{ax:232,g:1,b:0,r:270,aL:172,aR:172,up:1,...STR});P(B,1000,{ax:232,g:1,r:270,aL:172,aR:172,up:1,...STR});commit(B)}});
+// Rising Rockets
+S_('rockets','r_fw','Front Walkover','floor',{f:['knees','toes','split','arms','ears','finish'],b:B=>{bStart(B);bWalkover(B);bEnd(B)}});
+S_('rockets','r_hfr','Handstand Forward Roll','floor',{f:['knees','toes','together','chin','tuck','finish'],b:B=>{bStart(B);bHS(B,900,'roll');bEnd(B)}});
+S_('rockets','r_bcw','Cartwheel on Beam','beam',{x:110,f:['knees','toes','arms','balance','ears'],b:B=>{bStart(B);bCart(B);bEnd(B)}});
+S_('rockets','r_bsp','Split Jump on Beam','beam',{x:180,f:['split','toes','knees','height','balance'],b:B=>{bStart(B);bJump(B,'split',84);bEnd(B)}});
+S_('rockets','r_ch','Cast to Horizontal','bars',{f:['knees','toes','together','cast','arms'],b:(B,c)=>{bCast(B,c,85);supEnd(B,c)}});
+S_('rockets','r_ud','Underswing Dismount','bars',{f:['knees','toes','together','landing','arms'],b:(B,c)=>{bUnderswing(B,c);bEnd(B)}});
+S_('rockets','r_fhm','Front Handspring onto Mats','vault',{v:'mats',x:10,f:['knees','toes','together','arms','landing'],b:(B,c)=>{bRun(B,7);bHurdle(B);
+  P(B,200,{dx:20,g:0,h:78,r:70,...UP,st:1,tog:1,ast:1,...PT,air:1});P(B,230,{...TBL(c),r:180,aL:180,aR:180,up:1,st:1,tog:1,ast:1,...PT});commit(B);
+  bPost(B,c,{s:1,R0:0,rots:0,shape:'layout',land:262});bEnd(B)}});
+S_('rockets','r_sv','Straddle Vault','vault',{v:'table',x:10,f:['knees','toes','arms','landing','height'],b:(B,c)=>{bRun(B,7);bHurdle(B);
+  P(B,220,{dx:20,g:0,h:84,r:35,aL:120,aR:120,...PT,...STR,air:1});P(B,230,{...TBL(c),r:25,aL:60,aR:60,ast:1,tL:95,tR:95,st:1,...PT});
+  P(B,240,{ax:240,g:0,b:0,h:105,r:10,tL:80,tR:80,aL:160,aR:160,st:1,...PT,air:1});P(B,240,{ax:266,g:0,h:66,...UP,...STR,air:1});
+  P(B,260,{ax:282,...SQ,aL:110,aR:110,land:1});commit(B);bEnd(B)}});
+// Team Amethyst
+S_('amethyst','a_bw','Back Walkover','floor',{x:250,f:['knees','toes','split','arms','ears','finish'],b:B=>{bStart(B);bWalkover(B,1);bEnd(B)}});
+S_('amethyst','a_robhs','Round-off Back Handspring','floor',{x:90,f:['knees','toes','together','arms','landing'],b:B=>{bStart(B);bRO(B);bBHS(B,1);bEnd(B)}});
+S_('amethyst','a_bhs','Handstand on Beam','beam',{x:160,f:['knees','toes','together','hold','balance','arms'],b:B=>{bStart(B);bHS(B,1300);bEnd(B)}});
+S_('amethyst','a_ft','Full Turn','beam',{x:180,f:['releve','balance','finish','lookdown'],b:B=>{bStart(B);bTurn(B,1);bEnd(B)}});
+S_('amethyst','a_kip','Kip','bars',{bar:'high',f:['knees','toes','together','arms'],b:(B,c)=>{bKip(B,c)}});
+S_('amethyst','a_chc','Clear Hip Circle','bars',{bar:'high',f:['knees','toes','together','arms'],b:(B,c)=>{bClearHip(B,c)}});
+S_('amethyst','a_fhv','Front Handspring Vault','vault',{v:'table',x:10,f:['knees','toes','together','arms','height','landing'],b:(B,c)=>vFront(B,c,0,'layout',292)});
+S_('amethyst','a_yt','Yurchenko Timer','vault',{v:'mats',x:10,f:['knees','toes','together','arms','landing'],b:(B,c)=>vYur(B,c,0,'layout',0,262)});
+// Team Sapphire
+S_('sapphire','p_bt','Round-off Back Tuck','floor',{x:80,f:['tuck','toes','together','height','landing'],b:B=>{bStart(B);bRO(B);bBHS(B,1);bFlip(B,{back:1,rots:1,shape:'tuck'});bEnd(B)}});
+S_('sapphire','p_ft','Front Tuck','floor',{x:120,f:['tuck','toes','height','landing'],b:B=>{bStart(B);bFlip(B,{back:0,rots:1,shape:'tuck',stand:1});bEnd(B)}});
+S_('sapphire','p_bbw','Back Walkover on Beam','beam',{x:240,f:['knees','toes','split','balance','ears'],b:B=>{bStart(B);bWalkover(B,1);bEnd(B)}});
+S_('sapphire','p_sl','Split Leap on Beam','beam',{x:80,f:['split','toes','knees','height','balance'],b:B=>{bStart(B);bLeap(B,0,1);bEnd(B)}});
+S_('sapphire','p_chs','Cast Handstand','bars',{f:['knees','toes','together','cast','arms'],b:(B,c)=>{bCast(B,c,174);supEnd(B,c)}});
+S_('sapphire','p_tf','Tuck Flyaway','bars',{bar:'high',f:['tuck','toes','height','landing'],b:(B,c)=>{bFly(B,c,{rots:1,shape:'tuck'});bEnd(B)}});
+S_('sapphire','p_yl','Yurchenko Layout','vault',{v:'table',x:10,f:['knees','toes','together','height','landing'],b:(B,c)=>vYur(B,c,1,'layout',0,300)});
+S_('sapphire','p_hft','Handspring Front Tuck','vault',{v:'table',x:10,f:['tuck','toes','height','landing'],b:(B,c)=>vFront(B,c,1,'tuck',300)});
+// Team Ruby
+S_('ruby','u_bl','Back Layout','floor',{x:80,f:['knees','toes','together','height','landing'],b:B=>{bStart(B);bRO(B);bBHS(B,1);bFlip(B,{back:1,rots:1,shape:'layout'});bEnd(B)}});
+S_('ruby','u_bf','Back Full','floor',{x:80,f:['knees','toes','together','height','landing'],b:B=>{bStart(B);bRO(B);bBHS(B,1);bFlip(B,{back:1,rots:1,shape:'layout',tw:1});bEnd(B)}});
+S_('ruby','u_bbh','Back Handspring on Beam','beam',{x:250,f:['knees','toes','together','arms','balance'],b:B=>{bStart(B);bBHS(B);bEnd(B)}});
+S_('ruby','u_swl','Switch Leap on Beam','beam',{x:80,f:['split','toes','knees','height','balance'],b:B=>{bStart(B);bLeap(B,1,1);bEnd(B)}});
+S_('ruby','u_gs','Giant Swing','bars',{bar:'high',f:['knees','toes','together','arms'],b:(B,c)=>{bGiant(B,c,2);bEnd(B)}});
+S_('ruby','u_lf','Layout Flyaway','bars',{bar:'high',f:['knees','toes','together','height','landing'],b:(B,c)=>{bFly(B,c,{rots:1,shape:'layout'});bEnd(B)}});
+S_('ruby','u_yf','Yurchenko Full','vault',{v:'table',x:10,f:['knees','toes','together','height','landing'],b:(B,c)=>vYur(B,c,1,'layout',1,300)});
+S_('ruby','u_hfp','Handspring Front Pike','vault',{v:'table',x:10,f:['knees','toes','together','height','landing'],b:(B,c)=>vFront(B,c,1,'pike',300)});
+// Team Diamond
+S_('diamond','d_db','Double Back','floor',{x:70,f:['tuck','toes','together','height','landing'],b:B=>{bStart(B);bRO(B);bBHS(B,1);bFlip(B,{back:1,rots:2,shape:'tuck',peak:135});bEnd(B)}});
+S_('diamond','d_df','Double Full','floor',{x:70,f:['knees','toes','together','height','landing'],b:B=>{bStart(B);bRO(B);bBHS(B,1);bFlip(B,{back:1,rots:1,shape:'layout',tw:2,peak:125});bEnd(B)}});
+S_('diamond','d_bt','Back Tuck on Beam','beam',{x:210,f:['tuck','toes','height','balance'],b:B=>{bStart(B);bFlip(B,{back:1,rots:1,shape:'tuck',stand:1,trav:6,peak:86});bEnd(B)}});
+S_('diamond','d_ac','Aerial Cartwheel','beam',{x:110,f:['knees','toes','height','balance'],b:B=>{bStart(B);bCart(B,1);bEnd(B)}});
+S_('diamond','d_pir','Giant with Pirouette','bars',{bar:'high',f:['knees','toes','together','arms'],b:(B,c)=>{bGiant(B,c,1,1);bEnd(B)}});
+S_('diamond','d_dbf','Double Back Flyaway','bars',{bar:'high',f:['tuck','toes','height','landing'],b:(B,c)=>{bFly(B,c,{rots:2,shape:'tuck'});bEnd(B)}});
+S_('diamond','d_y15','Yurchenko 1½','vault',{v:'table',x:10,f:['knees','toes','together','height','landing'],b:(B,c)=>vYur(B,c,1,'layout',1.5,300)});
+S_('diamond','d_ydf','Yurchenko Double Full','vault',{v:'table',x:10,f:['knees','toes','together','height','landing'],b:(B,c)=>vYur(B,c,1,'layout',2,300)});
+
+/* ---- faults ---- */
+function applyFault(F,fault,A){
+ if(!fault)return;
+ const M={toes:f=>{if(f.pt){f.fL=80;f.fR=80}},knees:f=>{if(f.st){f.kL+=45;f.kR+=45}},arms:f=>{if(f.ast){f.eL+=55;f.eR+=55}},
+  together:f=>{if(f.tog){f.tL+=24;f.tR-=24}},ears:f=>{if(f.up){f.aL=Math.min(f.aL,110);f.aR=Math.min(f.aR,110)}},finish:f=>{if(f.fin){f.aL=4;f.aR=4}},
+  split:f=>{if(f.sp){f.tL*=.45;f.tR*=.45}},height:f=>{if(f.air)f.h=38+(f.h-38)*.5},tuck:f=>{if(f.tk){f.tL*=.55;f.kL*=.4;f.tR*=.55;f.kR*=.4}},
+  hold:f=>{if(f.hold)f.dt*=.18},releve:f=>{if(f.rel){f.fL=90;f.fR=90}},tarms:f=>{if(f.tarm){f.aL=6;f.aR=6}},
+  cast:f=>{if(f.cast){f.rot=8+(f.rot-8)*.38;f.aL=f.rot;f.aR=f.rot}},chin:f=>{if(f.tk)f.hd-=55}};
+ if(M[fault])F.forEach(M[fault]);
+ if(fault==='head'||fault==='lookdown')F.forEach((f,i)=>{if(i>0&&i<F.length-2)f.hd+=45});
+ if(fault==='balance')A.wobble=1;
+ if(fault==='landing'){let i=-1;F.forEach((f,j)=>{if(f.land)i=j});if(i>0){const L=F[i],pv=F[i-1],d=Math.sign(L.x-pv.x)||1;
+  const st=Object.assign({},L,{dt:230,tL:42,kL:22,tR:-20,kR:12,aL:130,aR:40,land:0});st.x=L.x+d*15;
+  const rc=Object.assign({},L,{dt:320,land:0});rc.x=L.x+d*18;for(let j=i+1;j<F.length;j++)F[j].x+=d*18;F.splice(i+1,0,st,rc);}}
+}
+function buildAnim(sk,girl,fault){
+ const s=gScale(girl.age),sc=scene(sk.ev,sk.v,sk.bar);
+ const c={s,ground:sc.ground,bar:sc.bar,tbl:sc.tbl,hip:f=>{const W=solve(f,s,sc);return{x:W.hip[0],y:W.hip[1]}}};
+ const B=mkB(sk.x,1);sk.b(B,c);
+ const F=B.F.map(f=>Object.assign({},f)),A={F,s,sc,wobble:0};
+ applyFault(F,fault,A);
+ const anc=sc.bar||sc.tbl;if(anc)for(const f of F)if(!f.b){f.bx=anc.x;f.by=anc.y}
+ for(const f of F){const W=solve(f,s,sc);f.x=W.hip[0];f.h=sc.ground(f.x)-W.hip[1]}
+ let T=0;F.forEach((f,i)=>{if(i)T+=Math.max(30,f.dt);f.T=T});A.dur=T;return A;
+}
+function sample(A,T){
+ const F=A.F;let i=1;while(i<F.length-1&&F[i].T<T)i++;
+ if(T<=0)i=1;const a=F[i-1],b=F[i],p0=F[Math.max(0,i-2)],p3=F[Math.min(F.length-1,i+1)];
+ let u=(T-a.T)/((b.T-a.T)||1);u=Math.max(0,Math.min(1,u));
+ const o={},u2=u*u,u3=u2*u;
+ for(const k of NUM){const P0=p0[k],P1=a[k],P2=b[k],P3=p3[k];
+  o[k]=0.5*((2*P1)+(-P0+P2)*u+(2*P0-5*P1+4*P2-P3)*u2+(-P0+3*P1-3*P2+P3)*u3);}
+ o.g=Math.max(0,Math.min(1,o.g));o.b=Math.max(0,Math.min(1,o.b));
+ if(A.wobble&&o.g>.5&&T>400&&T<A.dur-300){o.rot+=7*Math.sin(T/105);o.aL+=45*Math.sin(T/80);o.aR+=45*Math.sin(T/80+2)}
+ return o;
+}
+function drawGirl(W,g){
+ const s=W.s,sk=g.skin,dk=shade(sk,-28),lc=g.leoC,hc=g.hairC,L=W.L;
+ const ln=(a,b,w,c)=>`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${c}" stroke-width="${(w*s).toFixed(2)}" stroke-linecap="round"/>`;
+ let o='';
+ o+=ln(W.hip,W.kR,6.6,dk)+ln(W.kR,W.aR,5.6,dk)+ln(W.aR,W.tR,3.6,dk);
+ o+=ln(W.sh,W.eR,4.4,dk)+ln(W.eR,W.hR,3.8,dk);
+ o+=ln(W.hip,W.sh,11,lc)+`<circle cx="${W.hip[0].toFixed(1)}" cy="${W.hip[1].toFixed(1)}" r="${(5.8*s).toFixed(2)}" fill="${shade(lc,-15)}"/>`;
+ o+=ln(W.hip,W.kL,6.6,sk)+ln(W.kL,W.aL,5.6,sk)+ln(W.aL,W.tL,3.6,sk);
+ o+=ln(W.hip,[W.hip[0]+(W.kL[0]-W.hip[0])*.25,W.hip[1]+(W.kL[1]-W.hip[1])*.25],7,lc);
+ const nearArm=ln(W.sh,W.eL,4.4,sk)+ln(W.eL,W.hL,3.8,sk)+`<circle cx="${W.hL[0].toFixed(1)}" cy="${W.hL[1].toFixed(1)}" r="${(2.3*s).toFixed(2)}" fill="${sk}"/>`;
+ const r=L.HR;let hair='';
+ switch(g.style){
+  case'Ponytail':hair=`<path d="M${-r*.5} ${-r*.85} Q${-r*2.1} ${-r*.7} ${-r*1.9} ${r*1.1}" stroke="${hc}" stroke-width="${r*.75}" fill="none" stroke-linecap="round"/>`;break;
+  case'High Bun':hair=`<circle cx="${-r*.25}" cy="${-r*1.05}" r="${r*.55}" fill="${hc}"/>`;break;
+  case'Pigtails':hair=`<circle cx="${-r*1.05}" cy="${-r*.1}" r="${r*.5}" fill="${hc}"/><circle cx="${-r*.4}" cy="${-r*.95}" r="${r*.42}" fill="${hc}"/>`;break;
+  case'Braid':hair=[0,1,2].map(i=>`<circle cx="${-r*(.9+i*.15)}" cy="${r*(.2+i*.6)}" r="${r*.38}" fill="${hc}"/>`).join('');break;
+  case'Short Bob':hair=`<ellipse cx="${-r*.35}" cy="${r*.15}" rx="${r*.95}" ry="${r*1.05}" fill="${hc}"/>`;break;
+  case'Curly Puff':hair=`<circle cx="${-r*.5}" cy="${-r*.6}" r="${r*.9}" fill="${hc}"/>`;break;
+  case'Space Buns':hair=`<circle cx="${-r*.65}" cy="${-r*.85}" r="${r*.42}" fill="${hc}"/><circle cx="${r*.25}" cy="${-r*1.05}" r="${r*.42}" fill="${hc}"/>`;break;
+  default:hair=`<path d="M${-r*.6} ${-r*.4} Q${-r*1.4} ${r*.6} ${-r*1.1} ${r*1.7}" stroke="${hc}" stroke-width="${r*.9}" fill="none" stroke-linecap="round"/>`;
+ }
+ o+=`<g transform="translate(${W.head[0].toFixed(1)},${W.head[1].toFixed(1)}) scale(${W.sx.toFixed(3)},1) rotate(${W.ha.toFixed(1)})">${hair}
+ <circle cx="${-r*.12}" cy="${-r*.1}" r="${r*1.02}" fill="${hc}"/><circle cx="${r*.12}" cy="${r*.08}" r="${r*.88}" fill="${sk}"/>
+ <circle cx="${r*.5}" cy="${-r*.05}" r="${r*.14}" fill="#2a1a20"/><path d="M${r*.35} ${r*.45} q${r*.22} ${r*.16} ${r*.42} -${r*.04}" stroke="#b23a5a" stroke-width="${r*.12}" fill="none" stroke-linecap="round"/>
+ <circle cx="${-r*.7}" cy="${-r*.55}" r="${r*.22}" fill="${g.acc}"/></g>`;
+ return o+nearArm;
+}
+function sceneSVG(sk,lvl){
+ const sc=scene(sk.ev,sk.v,sk.bar);
+ let o=`<defs><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4fb"/><stop offset="1" stop-color="#efe6ff"/></linearGradient></defs>
+ <rect width="400" height="230" fill="url(#wall)"/>
+ <g opacity=".5">${[40,120,200,280,360].map(x=>`<rect x="${x-22}" y="24" width="44" height="30" rx="6" fill="#fff"/><rect x="${x-18}" y="28" width="36" height="22" rx="4" fill="#d9ecff"/>`).join('')}</g>
+ <text x="200" y="76" text-anchor="middle" font-size="12" font-weight="900" fill="${LV[lvl].col}" opacity=".55" font-family="ui-rounded,system-ui">${LV[lvl].em} ${LV[lvl].name.toUpperCase()}</text>
+ <rect x="0" y="200" width="400" height="30" fill="#c9b8f0"/>`;
+ if(sk.ev==='floor')o+=`<rect x="0" y="198" width="400" height="32" fill="#4b7bea"/><rect x="14" y="198" width="372" height="3" fill="#fff" opacity=".85"/>`;
+ if(sk.ev==='beam')o+=`<rect x="10" y="194" width="380" height="8" rx="3" fill="#3fb6e8"/><rect x="64" y="141" width="7" height="55" fill="#9aa3b5"/><rect x="329" y="141" width="7" height="55" fill="#9aa3b5"/><rect x="52" y="194" width="31" height="5" rx="2" fill="#7f889a"/><rect x="317" y="194" width="31" height="5" rx="2" fill="#7f889a"/><rect x="28" y="135" width="344" height="8" rx="3" fill="#d8b98a"/><rect x="28" y="135" width="344" height="2.5" rx="1" fill="#efd9b5"/>`;
+ if(sk.ev==='bars')o+=`<rect x="255" y="192" width="140" height="9" rx="3" fill="#3fb6e8"/><line x1="165" y1="125" x2="165" y2="200" stroke="#9aa3b5" stroke-width="4"/><line x1="235" y1="95" x2="235" y2="200" stroke="#9aa3b5" stroke-width="4"/><line x1="165" y1="125" x2="120" y2="200" stroke="#b9c0cc" stroke-width="1"/><line x1="235" y1="95" x2="290" y2="200" stroke="#b9c0cc" stroke-width="1"/><circle cx="165" cy="125" r="3.6" fill="#f2e6cf" stroke="#9aa3b5" stroke-width="1.2"/><circle cx="235" cy="95" r="3.6" fill="#f2e6cf" stroke="#9aa3b5" stroke-width="1.2"/>`;
+ if(sk.ev==='vault'){
+  o+=`<rect x="0" y="197" width="150" height="4" fill="#4b7bea"/><path d="M136 200 L164 193 L164 200Z" fill="#f2a23a"/><rect x="136" y="199" width="28" height="2" fill="#c47c1c"/>`;
+  if(sk.v==='none')o+=`<rect x="175" y="190" width="215" height="11" rx="3" fill="#3fb6e8"/>`;
+  else if(sk.v==='mats')o+=`<rect x="195" y="160" width="177" height="41" rx="5" fill="#ff8cc6"/><rect x="195" y="174" width="177" height="2" fill="#fff" opacity=".6"/><rect x="195" y="188" width="177" height="2" fill="#fff" opacity=".6"/>`;
+  else o+=`<rect x="238" y="190" width="155" height="11" rx="3" fill="#3fb6e8"/><rect x="200" y="155" width="8" height="45" fill="#9aa3b5"/><rect x="190" y="196" width="28" height="5" rx="2" fill="#7f889a"/><rect x="189" y="146" width="34" height="10" rx="5" fill="#6b4bd6"/>`;
+ }
+ return o;
+}
+
+/* ============================ PLAYER ============================ */
+let RAF=0,SPEED=1;
+function play(A,girl,cb){
+ cancelAnimationFrame(RAF);const el=document.getElementById('fig');if(!el)return;
+ let t0=null;const end=A.dur+250;
+ const step=ts=>{if(t0===null)t0=ts;const T=(ts-t0)*SPEED*(SCREEN==='meet'?1.5:1);const p=sample(A,Math.min(T,A.dur));
+  const W=solve(p,A.s,A.sc);const e2=document.getElementById('fig');if(!e2)return;e2.innerHTML=drawGirl(W,girl);
+  if(T<end)RAF=requestAnimationFrame(step);else cb&&cb();};
+ RAF=requestAnimationFrame(step);
+}
+function stillPose(sk,girl){const A=buildAnim(sk,girl,null);const W=solve(sample(A,0),A.s,A.sc);return drawGirl(W,girl)}
+
+/* ============================ PROGRESS ============================ */
+const MAXTRY=10;
+function prog(g,id){if(!g.sk[id]){const ex=0.6+g.talent*1.8;g.sk[id]={need:Math.min(MAXTRY,3+Math.floor(Math.pow(Math.random(),ex)*(MAXTRY-2))),p:0,done:0,last:null}}return g.sk[id]}
+const mastered=(g,set)=>(SETS[set||LV[g.lvl].set]||[]).filter(s=>g.sk[s.id]&&g.sk[s.id].done).length;
+function nextLevel(g){const i=LEVELS.findIndex(l=>l.id===g.lvl);const l=LEVELS[i];
+ if(l.id==='mini')return LV.kinder;if(l.id==='kinder')return g.age<=10?LV.sparkle:LV.stars;if(l.id==='sparkle'||l.id==='stars')return LV.rockets;
+ if(l.id==='diamond')return null;return LEVELS[i+1];}
+function readyInfo(g){const n=nextLevel(g);if(!n)return null;if(mastered(g)<PROMOTE_NEED)return null;return{lv:n,ok:g.age>=n.min}}
+const TITLES=[[0,'Assistant Coach'],[300,'Coach'],[900,'Head Coach'],[2000,'Star Coach'],[4000,'Elite Coach'],[8000,'Olympic Coach']];
+const title=()=>TITLES.filter(t=>S.pts>=t[0]).pop()[1];
+
+/* ============================ UI ============================ */
+const $app=document.getElementById('app'),$m=document.getElementById('modal'),$mb=document.getElementById('mbox');
+let SCREEN='who',CUR={};
+function openM(html){$mb.innerHTML=html;$m.classList.add('on');$mb.scrollTop=0}
+function closeM(){$m.classList.remove('on');$mb.innerHTML=''}
+function toast(t,ms=2600){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),ms)}
+function confetti(){const em=['🎉','⭐','✨','🏅','💖','🎊'];for(let i=0;i<26;i++){const d=document.createElement('div');d.className='conf';d.textContent=pick(em);d.style.left=Math.random()*100+'vw';d.style.top=(-5-Math.random()*10)+'vh';d.style.animationDelay=(Math.random()*.5)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),2400)}}
+const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+
+function go(sc,o={}){cancelAnimationFrame(RAF);SCREEN=sc;CUR=o;render();window.scrollTo(0,0)}
+function render(){({who:rWho,home:rHome,cls:rClass,practice:rPractice,roster:rRoster,hof:rHof,routine:rRoutine,meet:rMeet})[SCREEN]()}
+
+function rWho(){
+ $app.innerHTML=`<div style="text-align:center;padding-top:30px"><div style="font-size:60px">🤸‍♀️</div>
+ <div class="title"><h1 style="font-size:32px">Spencer Gymnastics Academy</h1><div class="sub" style="font-size:16px;margin-top:4px">Who's coaching today?</div></div>
+ <div class="pick">${COACHES.map(c=>{const sv=load(c.n);return`<button onclick="pickCoach('${c.n}')"><span>${c.e}</span>Coach ${c.n}<div style="font-size:13px;opacity:.6;margin-top:4px">${sv?sv.girls.length+' gymnasts':'New gym!'}</div></button>`}).join('')}</div></div>`;
+}
+function pickCoach(n){COACH=n;S=load(n)||newSave();migrate();save();go('home');checkQueue()}
+
+function rHome(){
+ const pend=S.queue.length;
+ $app.innerHTML=`<div class="top"><div class="title"><h1>Spencer Gymnastics Academy</h1><div class="sub">Coach ${COACH} · ${title()} · Season ${S.season}</div></div>
+ <button class="btn ghost small" onclick="go('roster')">👧 All Gymnasts</button><button class="btn ghost small" onclick="go('hof')">🏆 Hall of Fame</button><button class="btn ghost small" onclick="go('who')">🔄 Switch Coach</button></div>
+ <div class="stats"><span class="chip">⭐ ${S.pts} pts</span><span class="chip">👧 ${S.girls.length} gymnasts</span><span class="chip">🏅 ${S.st.mast} skills mastered</span>
+ <span class="chip">🆕 New gymnasts in <span id="tArr">${mmss(S.nextArr-S.play)}</span></span><span class="chip">🎂 Next season in <span id="tSea">${mmss(S.nextSea-S.play)}</span></span></div>
+ ${pend?`<div class="banner">🛎️ ${pend} new gymnast${pend>1?'s are':' is'} waiting at the front desk! <button class="btn small pink" onclick="checkQueue()">Meet them</button></div>`:''}
+ ${(()=>{const t=LEVELS.filter(l=>l.team&&meetReady(l.id));return t.length?`<div class="banner">🏆 Meet season! ${t.map(l=>l.em+' '+l.name).join(', ')} can compete in the ${MEETS[(S.season-1)%MEETS.length]}.<button class="btn small pink" onclick="go('cls',{lvl:'${t[0].id}'})">Go</button></div>`:''})()}
+ <div class="sect">Classes</div><div class="grid">${LEVELS.filter(l=>!l.team).map(lvlCard).join('')}</div>
+ <div class="sect">💎 Competition Teams — earned by moving up</div><div class="grid">${LEVELS.filter(l=>l.team).map(lvlCard).join('')}</div>
+ <div class="hint">Gymnasts move up after mastering ${PROMOTE_NEED} of their level's skills. A few new girls sign up every 20 minutes of coaching, and every 30 minutes a new season starts and everyone has a birthday.</div>`;
+}
+function lvlCard(l){const gs=S.girls.filter(g=>g.lvl===l.id);const rd=gs.filter(g=>{const r=readyInfo(g);return r&&r.ok}).length;
+ return`<button class="lvl" onclick="go('cls',{lvl:'${l.id}'})"><div class="stripe" style="background:${l.col}"></div><span class="cnt">${gs.length} 👧</span><div class="em">${l.em}</div><h3>${l.name}</h3>
+ <div class="ages">Ages ${l.min}${l.max>=16?'+':'–'+l.max} · ${l.desc}</div>${rd?`<span class="tag">⬆️ ${rd} ready to move up</span>`:''}
+ <div class="faces">${gs.slice(0,9).map(face).join('')}</div></button>`}
+
+function rClass(){
+ const l=LV[CUR.lvl],gs=S.girls.filter(g=>g.lvl===l.id),set=SETS[l.set];
+ $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="go('home')">← Gym</button><div class="title"><h1>${l.em} ${l.name}</h1><div class="sub">Ages ${l.min}${l.max>=16?'+':'–'+l.max} · ${l.desc} · ${gs.length} gymnasts</div></div></div>
+ ${l.team?teamBar(l,gs):''}
+ ${gs.length?`<div class="roster">${gs.map(gCard).join('')}</div>`:`<div class="ask"><div class="q">No gymnasts in this ${l.team?'team':'class'} yet.</div><div class="hint">${l.entry?'Place new gymnasts here when they sign up.':'Gymnasts join by moving up from the level before.'}</div></div>`}
+ <div class="sect">Coach a skill</div><div class="events">${EVENTS.map(e=>`<div class="ev"><h3>${e.e} ${e.n}</h3>${set.filter(s=>s.ev===e.id).map(s=>{const m=gs.filter(g=>g.sk[s.id]&&g.sk[s.id].done).length;
+  return`<div class="sk"><div class="n">${s.n}<div class="m">${m}/${gs.length} mastered${s.pre?' · 🔒 needs '+SK[s.pre].n+' first':''}</div></div><button class="btn small pink" ${gs.length?'':'disabled'} onclick="startPractice('${l.id}','${s.id}')">Coach</button></div>`}).join('')}</div>`).join('')}</div>
+ ${l.team?routineExtras(l,gs):''}`;
+}
+function teamBar(l,gs){const done=S.meetDone[l.id]===S.season;
+ return`<div class="row" style="justify-content:flex-start;margin-bottom:12px"><button class="btn" onclick="go('routine',{lvl:'${l.id}',ev:'vault'})">📝 Routines</button>
+ ${done?`<span class="chip">✅ Competed this season · next meet in ${mmss(S.nextSea-S.play)}</span>`:`<button class="btn pink" ${gs.length?'':'disabled'} onclick="startMeet('${l.id}')">🏆 Season ${S.season} meet: ${MEETS[(S.season-1)%MEETS.length]}</button>`}</div>`}
+function routineExtras(l,gs){const R=routineOf(l.id),own=new Set(SETS[l.set].map(s=>s.id));const ids=[...new Set(RT_EVENTS.flatMap(e=>R[e]))].filter(id=>!own.has(id));if(!ids.length)return'';
+ return`<div class="sect">Other skills in your routines</div><div class="events">${EVENTS.map(e=>{const ss=ids.filter(id=>SK[id].ev===e.id);if(!ss.length)return'';return`<div class="ev"><h3>${e.e} ${e.n}</h3>${ss.map(id=>{const s=SK[id],m=gs.filter(g=>g.sk[id]&&g.sk[id].done).length;
+  return`<div class="sk"><div class="n">${s.n}<div class="m">${SETNAME[s.set]} · ${m}/${gs.length} mastered</div></div><button class="btn small pink" ${gs.length?'':'disabled'} onclick="startPractice('${l.id}','${id}')">Coach</button></div>`}).join('')}</div>`}).join('')}</div>`}
+function gCard(g){const r=readyInfo(g),l=LV[g.lvl];return`<button class="gcard" onclick="girlModal(${g.id})">${r&&r.ok?'<span class="ready">⬆️ Ready!</span>':''}${face(g)}<div class="nm">${g.first}</div><div class="meta">Age ${g.age} · ${l.em} ${mastered(g)}/${SETS[l.set].length}</div></button>`}
+
+function rRoster(){
+ const gs=S.girls.slice().sort((a,b)=>LEVELS.findIndex(l=>l.id===a.lvl)-LEVELS.findIndex(l=>l.id===b.lvl)||a.age-b.age);
+ $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="go('home')">← Gym</button><div class="title"><h1>👧 All Gymnasts</h1><div class="sub">${gs.length} gymnasts at the academy</div></div></div><div class="roster">${gs.map(gCard).join('')}</div>`;
+}
+function rHof(){
+ $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="go('home')">← Gym</button><div class="title"><h1>🏆 Hall of Fame</h1><div class="sub">Gymnasts who graduated after turning 17</div></div></div>
+ ${S.hof.length?`<div class="roster">${S.hof.map(h=>`<div class="gcard">${face(h)}<div class="nm">${h.first} ${h.last}</div><div class="meta">${LV[h.lvl].em} ${LV[h.lvl].name}<br>${h.total} skills mastered</div></div>`).join('')}</div>`:'<div class="ask"><div class="q">No graduates yet!</div><div class="hint">When a gymnast turns 17 she graduates and joins the Hall of Fame.</div></div>'}`;
+}
+
+function girlModal(id){
+ const g=G(id),l=LV[g.lvl],r=readyInfo(g),set=SETS[l.set];
+ openM(`<div class="newtop">${face(g)}<div><h2>${fullName(g)}</h2><div style="font-weight:800;opacity:.7">${l.em} ${l.name}</div>
+ <div class="facts"><b>Age</b><span>${g.age}</span><b>Hair</b><span>${g.hair}, ${g.style}</span><b>Eyes</b><span>${g.eye}</span><b>Leotard</b><span>${g.leo}</span></div></div></div>
+ <div class="facts" style="margin-top:10px"><b>Personality</b><span>${g.trait}</span><b>Favorite event</b><span>${g.fav}</span><b>Loves</b><span>${g.animal} & ${g.snack}</span><b>Dream</b><span>To ${g.dream}</span>${g.medals?`<b>Medals</b><span>🥇 ${g.medals.gold} &nbsp;🥈 ${g.medals.silver} &nbsp;🥉 ${g.medals.bronze}</span>`:''}</div>
+ <div class="sect">Skills · ${mastered(g)}/${set.length} mastered</div>
+ ${set.map(s=>{const p=g.sk[s.id];const pc=p?(p.done?100:Math.round(p.p/p.need*100)):0;return`<div class="skl"><span style="width:170px">${p&&p.done?'🏅':EVENTS.find(e=>e.id===s.ev).e} ${s.n}</span><div class="bar"><i style="width:${pc}%"></i></div></div>`}).join('')}
+ ${r?(r.ok?`<div class="banner" style="margin-top:12px">⬆️ ${g.first} is ready for ${r.lv.em} ${r.lv.name}!<button class="btn small" onclick="promote(${g.id})">Move up!</button></div>`:`<div class="hint" style="margin-top:12px">${g.first} has mastered enough skills, but ${r.lv.name} is for ages ${r.lv.min}+. She'll move up after her next birthday${g.age+1<r.lv.min?'s':''}.</div>`):(nextLevel(g)?`<div class="hint" style="margin-top:12px">Master ${PROMOTE_NEED} skills to move up to ${nextLevel(g).name}.</div>`:`<div class="hint" style="margin-top:12px">💎 Top of the academy!</div>`)}
+ <div class="row" style="margin-top:14px"><button class="btn ghost" onclick="closeM()">Close</button></div>`);
+}
+function promote(id){const g=G(id),r=readyInfo(g);if(!r||!r.ok)return;g.lvl=r.lv.id;S.pts+=100;save();closeM();confetti();toast(`🎉 ${g.first} moved up to ${r.lv.em} ${r.lv.name}! +100 ⭐`);render()}
+
+/* ---- placement ---- */
+let QTOTAL=0;
+function checkQueue(){if(!S.queue.length){QTOTAL=0;return}if($m.classList.contains('on'))return;if(!QTOTAL)QTOTAL=S.queue.length;showNew()}
+function showNew(){
+ if(!S.queue.length){QTOTAL=0;return}
+ const g=S.queue[0],num=QTOTAL-S.queue.length+1;
+ openM(`<div style="text-align:center;font-weight:900;color:var(--pink);margin-bottom:8px">🛎️ NEW GYMNAST ${QTOTAL>1?`· ${num} of ${QTOTAL}`:''}</div>
+ <div class="newtop">${face(g)}<div><h2>${fullName(g)}</h2><div style="font-size:22px;font-weight:900;color:var(--purple)">Age ${g.age}</div>
+ <div class="facts"><b>Hair</b><span>${g.hair}</span><b>Style</b><span>${g.style}</span><b>Eyes</b><span>${g.eye}</span><b>Leotard</b><span>${g.leo}</span></div></div></div>
+ <div class="facts" style="margin-top:10px"><b>Personality</b><span>${g.trait}</span><b>Favorite event</b><span>${g.fav}</span><b>Loves</b><span>${g.animal} & ${g.snack}</span><b>Dream</b><span>To ${g.dream}</span></div>
+ <div class="sect" style="margin-bottom:0">Which class should ${g.first} join?</div><div id="pmsg" class="msg"></div>
+ <div class="place">${LEVELS.filter(l=>l.entry).map(l=>`<button id="pl_${l.id}" onclick="place('${l.id}')"><span style="font-size:24px">${l.em}</span>${l.name}<span class="a">Ages ${l.min}–${l.max}</span></button>`).join('')}
+ ${LEVELS.filter(l=>!l.entry).map(l=>`<button class="lock" onclick="place('${l.id}')"><span style="font-size:24px">${l.em}</span>${l.name}<span class="a">🔒 Earned</span></button>`).join('')}</div>`);
+}
+function place(id){
+ const g=S.queue[0],l=LV[id],msg=document.getElementById('pmsg');
+ const bad=t=>{msg.className='msg no';msg.textContent=t;const b=document.getElementById('pl_'+id)||$mb;b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake')};
+ if(!l.entry)return bad(`${l.name} is for gymnasts who move up — new girls start in a class first.`);
+ if(g.age<l.min)return bad(`${g.first} is only ${g.age} — ${l.name} is for ages ${l.min}–${l.max}.`);
+ if(g.age>l.max)return bad(`${g.first} is ${g.age} — that's too old for ${l.name} (ages ${l.min}–${l.max}).`);
+ g.lvl=id;S.girls.push(S.queue.shift());S.pts+=5;save();
+ toast(`${l.em} ${g.first} joined ${l.name}!`,1600);closeM();
+ if(S.queue.length)setTimeout(showNew,250);else{QTOTAL=0;if(SCREEN==='home'||SCREEN==='cls'||SCREEN==='roster')render()}
+}
+
+/* ---- practice ---- */
+let PR=null;
+function startPractice(lvl,skid){const gs=S.girls.filter(g=>g.lvl===lvl);if(!gs.length)return;PR={lvl,skid,ids:gs.map(g=>g.id),i:0,ok:0,newM:[]};go('practice');}
+function rPractice(){
+ const sk=SK[PR.skid],l=LV[PR.lvl],ev=EVENTS.find(e=>e.id===sk.ev);
+ $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="go('cls',{lvl:'${PR.lvl}'})">← ${l.name}</button><div class="title"><h1>${ev.e} ${sk.n}</h1><div class="sub">${ev.n} · ${l.em} ${l.name}</div></div></div>
+ <div class="stage"><svg viewBox="0 22 400 208" xmlns="http://www.w3.org/2000/svg">${sceneSVG(sk,PR.lvl)}<g id="fig"></g></svg>
+ <div class="lbl" id="slbl"></div><div class="ctrl"><button class="btn ghost small" id="spd" onclick="toggleSpeed()">${SPEED<1?'🐢 Slow-mo':'🐇 Normal'}</button></div></div>
+ <div class="who" id="who"></div><div class="ask" id="ask"></div>`;
+ turn();
+}
+function toggleSpeed(){SPEED=SPEED<1?1:0.5;const b=document.getElementById('spd');if(b)b.textContent=SPEED<1?'🐢 Slow-mo':'🐇 Normal'}
+function whoBar(){
+ const g=G(PR.ids[PR.i]),p=prog(g,PR.skid),pc=p.done?100:Math.round(p.p/p.need*100);
+ document.getElementById('who').innerHTML=`${face(g)}<div><div class="nm">${g.first} <span style="font-size:14px;opacity:.6">age ${g.age}</span></div>
+ <div style="font-size:13px;font-weight:800;opacity:.7">${p.done?'🏅 Mastered!':'Learning '+SK[PR.skid].n}</div><div class="bar"><i style="width:${pc}%"></i></div></div>
+ <div class="line">${PR.ids.map((id,i)=>{const gg=G(id);return face(gg).replace('<svg ',`<svg class="${i===PR.i?'cur':i<PR.i?'dn':''}" `)}).join('')}</div>`;
+}
+function lbl(t){const e=document.getElementById('slbl');if(e)e.textContent=t}
+function turn(){
+ if(PR.i>=PR.ids.length)return done();
+ const g=G(PR.ids[PR.i]);if(!g){PR.i++;return turn()}
+ const sk=SK[PR.skid],p=prog(g,sk.id),ask=document.getElementById('ask');
+ whoBar();
+ if(sk.pre&&!(g.sk[sk.pre]&&g.sk[sk.pre].done)){PR.fault=null;lbl(`${g.first} · not ready yet`);const fg=document.getElementById('fig');if(fg)fg.innerHTML=stillPose(sk,g);
+  ask.innerHTML=`<div class="msg no">🔒 ${g.first} needs to master the ${SK[sk.pre].n} before she can learn the ${sk.n}.</div><div class="row"><button class="btn" onclick="nextG()">Next gymnast →</button></div>`;return}
+ if(p.done){PR.fault=null;lbl(`${g.first} · already mastered`);ask.innerHTML=`<div class="q">Watch ${g.first}! 👀</div>`;
+  play(buildAnim(sk,g,null),g,()=>{ask.innerHTML=`<div class="msg ok">✨ Perfect! ${g.first} has already mastered the ${sk.n}.</div><div class="row"><button class="btn" onclick="nextG()">Next gymnast →</button></div>`});return}
+ let cand=sk.f.filter(x=>x!==p.last);PR.fault=pick(cand.length?cand:sk.f);
+ PR.opts=shuffle([PR.fault,...shuffle(sk.f.filter(x=>x!==PR.fault)).slice(0,2)]);
+ lbl(`${g.first}'s turn`);ask.innerHTML=`<div class="q">Watch ${g.first} carefully… 👀</div><div class="hint">Something will be a little off. Can you spot it?</div>`;
+ play(buildAnim(sk,g,PR.fault),g,askGuess);
+}
+function askGuess(){
+ const g=G(PR.ids[PR.i]);
+ document.getElementById('ask').innerHTML=`<div class="q">What did ${g.first} do WRONG?</div>
+ <div class="opts">${PR.opts.map((o,i)=>`<button class="opt" id="op${i}" onclick="guess(${i})">${o===PR.fault?FAULTS[o].bad:FAULTS[o].good}</button>`).join('')}</div>
+ <div class="row" style="margin-top:10px"><button class="btn ghost small" onclick="rewatch()">🔁 Watch again</button></div>`;
+}
+function rewatch(){const g=G(PR.ids[PR.i]);lbl(`${g.first} · again`);play(buildAnim(SK[PR.skid],g,PR.fault),g,()=>{})}
+function guess(i){
+ const g=G(PR.ids[PR.i]),sk=SK[PR.skid],p=prog(g,sk.id),o=PR.opts[i],ask=document.getElementById('ask');
+ ask.querySelectorAll('.row').forEach(r=>r.remove());
+ PR.opts.forEach((x,j)=>{const b=document.getElementById('op'+j);b.disabled=true;b.onclick=null;if(x===PR.fault)b.classList.add(o===x?'right':'wrong');else if(j===i)b.classList.add('wrong');else b.classList.add('dim')});
+ if(o===PR.fault){
+  p.p++;p.last=PR.fault;S.pts+=10;S.st.ok++;PR.ok++;const now=p.p>=p.need;
+  if(now){p.done=1;S.st.mast++;S.pts+=50;PR.newM.push(g.first)}
+  save();whoBar();
+  ask.insertAdjacentHTML('beforeend',`<div class="msg ok" style="margin-top:12px">✅ Great eye, Coach! +10 ⭐</div><div style="text-align:center"><span class="coach">🗣️ “${FAULTS[PR.fault].fix}”</span></div><div class="hint" id="fixh">Watch ${g.first} try it again…</div>`);
+  lbl(`${g.first} fixes it!`);
+  play(buildAnim(sk,g,null),g,()=>{const h=document.getElementById('fixh');if(h)h.remove();
+   if(now){confetti();ask.insertAdjacentHTML('beforeend',`<div class="msg ok" style="font-size:20px">🏅 ${g.first} MASTERED the ${sk.n}! +50 ⭐</div>`);const r=readyInfo(g);if(r&&r.ok)ask.insertAdjacentHTML('beforeend',`<div class="hint">⬆️ ${g.first} is ready to move up to ${r.lv.name}! (Tap her in the class list.)</div>`)}
+   else ask.insertAdjacentHTML('beforeend',`<div class="hint">She fixed it! She's still learning — she'll need more practice.</div>`);
+   ask.insertAdjacentHTML('beforeend',`<div class="row" style="margin-top:10px"><button class="btn" onclick="nextG()">Next gymnast →</button></div>`);});
+ }else{
+  S.st.no++;save();
+  ask.insertAdjacentHTML('beforeend',`<div class="msg no" style="margin-top:12px">❌ Not quite! She actually ${FAULTS[PR.fault].bad.replace(/^./,c=>c.toLowerCase())}.</div><div class="hint">She'll keep working on it. Watch again in slow-mo to see it!</div>
+  <div class="row" style="margin-top:10px"><button class="btn ghost" onclick="rewatch()">🔁 Watch again</button><button class="btn" onclick="nextG()">Next gymnast →</button></div>`);
+ }
+}
+function nextG(){PR.i++;turn()}
+function done(){
+ cancelAnimationFrame(RAF);const sk=SK[PR.skid];lbl('Practice done!');document.getElementById('who').innerHTML=`<div class="nm" style="padding:8px">🎉 Great practice, Coach ${COACH}!</div>`;
+ document.getElementById('ask').innerHTML=`<div class="q">Practice complete!</div><div class="msg">You spotted ${PR.ok} mistake${PR.ok===1?'':'s'} correctly.</div>
+ ${PR.newM.length?`<div class="msg ok">🏅 New masters: ${PR.newM.join(', ')}</div>`:''}
+ <div class="row"><button class="btn pink" onclick="startPractice('${PR.lvl}','${PR.skid}')">🔁 Practice ${sk.n} again</button><button class="btn" onclick="go('cls',{lvl:'${PR.lvl}'})">Pick another skill</button></div>`;
+ checkQueue();
+}
+
+/* ============================ ROUTINES & MEETS ============================ */
+const SETORDER=['mini','kinder','sparkle','rockets','amethyst','sapphire','ruby','diamond'];
+const SETNAME={mini:'🐣 Mini Flippers',kinder:'🌈 Kinder Kartwheelers',sparkle:'✨ Beginner',rockets:'🚀 Rising Rockets',amethyst:'💜 Team Amethyst',sapphire:'💙 Team Sapphire',ruby:'❤️ Team Ruby',diamond:'💎 Team Diamond'};
+const tier=s=>SETORDER.indexOf(s.set);
+const sval=s=>(tier(s)+1)/10;
+const RT_EVENTS=['vault','bars','beam','floor'],RT_MIN=4,RT_MAX=8;
+const EV=id=>EVENTS.find(e=>e.id===id);
+const fmt=x=>x.toFixed(3),r025=x=>Math.round(x*40)/40;
+const RIVAL_GYMS=['Red Rock Tumblers','Wasatch Flyers','Timpanogos Twisters','Bonneville Elite','Canyon Kids Gym','Summit Stars Gymnastics','Desert Sky Gymnastics','Alpine Aerials','Salt Flats Flippers','Zion Gymnastics Club'];
+const MEETS=['Snowflake Invitational','Red Rock Classic','Arches Challenge','Golden Spike Invitational','Wasatch Winter Cup','Sundance Showcase','Bryce Canyon Classic','Great Salt Lake Open','Pioneer Cup','Timpanogos Twist & Shout'];
+function migrate(){for(const g of S.girls)for(const k in g.sk){const p=g.sk[k];if(p.need>MAXTRY)p.need=MAXTRY;if(!p.done&&p.p>=p.need){p.done=1;S.st.mast++}}
+ S.routines=S.routines||{};S.meetDone=S.meetDone||{};S.meetLog=S.meetLog||[]}
+function defaultRoutine(team){const ti=SETORDER.indexOf(LV[team].set),r={};
+ for(const ev of RT_EVENTS){const pool=Object.values(SK).filter(s=>s.ev===ev&&tier(s)<=ti).sort((a,b)=>tier(a)-tier(b));
+  r[ev]=ev==='vault'?[(pool.filter(s=>tier(s)===ti)[0]||pool[pool.length-1]).id]:pool.slice(-4).map(s=>s.id)}
+ return r}
+function routineOf(team){if(!S.routines[team])S.routines[team]=defaultRoutine(team);return S.routines[team]}
+function startValue(ev,ids){
+ if(!ids.length)return 0;
+ if(ev==='vault')return Math.min(10,7.6+tier(SK[ids[0]])*0.3);
+ const v=6.6+ids.reduce((a,id)=>a+sval(SK[id]),0)-Math.max(0,RT_MIN-ids.length)*0.5;return Math.min(10,Math.max(0,v))}
+function perform(g,ev,ids){
+ if(!ids.length)return{sv:0,ded:0,score:0,skills:[],falls:0};
+ const sv=startValue(ev,ids);let ded=0.05+Math.random()*0.2*(1-g.talent*0.5),falls=0;const out=[];
+ for(const id of ids){const s=SK[id],p=g.sk[id],dn=p&&p.done,fr=p?(dn?1:p.p/p.need):0;
+  let d=dn?Math.random()*0.1:0.1+Math.random()*0.35*(1-fr)+0.05;if(ev==='vault')d*=2;
+  const fall=Math.random()<(dn?0.03:0.1+0.4*(1-fr));if(fall){d+=0.5;falls++}
+  ded+=d;out.push({id,fault:(d>0.12||fall)?pick(s.f):null,fall,d})}
+ return{sv,ded,score:Math.max(ev==='vault'?6:4,r025(sv-ded)),skills:out,falls}}
+function rivalGirl(col){const h=pick(HAIR),e=pick(EYES);return{first:pick(FIRST),last:pick(LAST),hairC:h[1],style:pick(STYLES),eyeC:e[1],skin:pick(SKIN),leoC:col,acc:pick(ACC),freck:Math.random()<.25,age:12}}
+function rivalScore(team){const base={amethyst:8.85,sapphire:9.0,ruby:9.15,diamond:9.3}[team];let x=base+(Math.random()+Math.random()+Math.random()-1.5)*0.35;if(Math.random()<.1)x-=.5;return r025(Math.min(9.9,x))}
+
+/* ---- routine editor ---- */
+function rRoutine(){
+ const l=LV[CUR.lvl],ev=CUR.ev,R=routineOf(l.id),ids=R[ev],gs=S.girls.filter(g=>g.lvl===l.id);
+ const mc=id=>gs.filter(g=>g.sk[id]&&g.sk[id].done).length;
+ const lib=Object.values(SK).filter(s=>s.ev===ev).sort((a,b)=>tier(a)-tier(b));
+ const val=s=>ev==='vault'?'Start value '+fmt(Math.min(10,7.6+tier(s)*0.3)):'+'+sval(s).toFixed(1);
+ const back=CUR.back==='meet'?"go('meet')":`go('cls',{lvl:'${l.id}'})`;
+ $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="${back}">← ${CUR.back==='meet'?'Meet':l.name}</button><div class="title"><h1>📝 ${l.em} ${l.name} Routines</h1><div class="sub">Pick the skills and their order for each event</div></div></div>
+ <div class="tabs">${RT_EVENTS.map(e=>`<button class="tab ${e===ev?'on':''}" onclick="CUR.ev='${e}';render()">${EV(e).e} ${EV(e).n}<small>${fmt(startValue(e,R[e]))}</small></button>`).join('')}</div>
+ <div class="ask"><div class="q">${ev==='vault'?'Competition vault':EV(ev).n+' routine'}</div>
+ <div class="msg">Start value: <b>${fmt(startValue(ev,ids))}</b> / 10.000</div>
+ ${ev!=='vault'&&ids.length<RT_MIN?`<div class="hint" style="color:var(--bad)">⚠️ A routine needs at least ${RT_MIN} skills. Each missing skill costs 0.5.</div>`:''}
+ ${ids.length?'':'<div class="hint">No skills yet. Add some from the list below.</div>'}
+ ${ids.map((id,i)=>{const s=SK[id];return`<div class="sk"><b style="width:22px">${i+1}.</b><div class="n">${s.n}<div class="m">${SETNAME[s.set]} · ${val(s)} · ${mc(id)}/${gs.length} mastered</div></div>
+  ${ev!=='vault'?`<button class="btn ghost small" ${i?'':'disabled'} onclick="rtMove(${i},-1)">↑</button><button class="btn ghost small" ${i<ids.length-1?'':'disabled'} onclick="rtMove(${i},1)">↓</button>`:''}<button class="btn ghost small" onclick="rtDel(${i})">✕</button></div>`}).join('')}
+ </div>
+ <div class="sect">All ${EV(ev).n} skills ${ev==='vault'?'(pick one)':`(up to ${RT_MAX})`}</div>
+ <div class="events">${SETORDER.map(st=>{const ss=lib.filter(s=>s.set===st);if(!ss.length)return'';return`<div class="ev"><h3 style="font-size:15px">${SETNAME[st]}</h3>${ss.map(s=>{const inR=ids.includes(s.id);
+  return`<div class="sk"><div class="n">${s.n}<div class="m">${val(s)} · ${mc(s.id)}/${gs.length} mastered</div></div><button class="btn small ${inR?'ghost':'pink'}" ${inR||(ev!=='vault'&&ids.length>=RT_MAX)?'disabled':''} onclick="rtAdd('${s.id}')">${inR?'✓ In':'+ Add'}</button></div>`}).join('')}</div>`}).join('')}</div>
+ <div class="hint">Harder skills raise the start value, but gymnasts lose points on skills they haven't mastered, and they might fall! You can coach any routine skill from the team page.</div>`;
+}
+function rtAdd(id){const R=routineOf(CUR.lvl),ev=CUR.ev;if(ev==='vault')R.vault=[id];else if(!R[ev].includes(id)&&R[ev].length<RT_MAX)R[ev].push(id);save();render()}
+function rtDel(i){routineOf(CUR.lvl)[CUR.ev].splice(i,1);save();render()}
+function rtMove(i,d){const a=routineOf(CUR.lvl)[CUR.ev],j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];save();render()}
+
+/* ---- meets ---- */
+let MT=null;
+function meetReady(team){return S.girls.some(g=>g.lvl===team)&&S.meetDone[team]!==S.season}
+function startMeet(team){
+ if(!meetReady(team))return;const gs=S.girls.filter(g=>g.lvl===team);
+ const gyms=[{name:'Spencer Gymnastics Academy',own:1,girls:gs.map(g=>({g,first:g.first,last:g.last,sc:{},shown:{}}))}];
+ shuffle(RIVAL_GYMS).slice(0,3).forEach(n=>{const col=pick(LEOS)[1],girls=[];for(let i=0,k=3+rnd(2);i<k;i++){const rg=rivalGirl(col);girls.push({g:rg,first:rg.first,last:rg.last,sc:{}})}gyms.push({name:n,girls})});
+ for(const gm of gyms.slice(1))for(const x of gm.girls)for(const ev of RT_EVENTS)x.sc[ev]=rivalScore(team);
+ MT={team,name:MEETS[(S.season-1)%MEETS.length],gyms,ev:0,gi:0,phase:'intro',tok:0};go('meet');
+}
+function meetGo(){const R=routineOf(MT.team);for(const x of MT.gyms[0].girls){x.perf={};for(const ev of RT_EVENTS){x.perf[ev]=perform(x.g,ev,R[ev]);x.sc[ev]=x.perf[ev].score}}
+ S.meetDone[MT.team]=S.season;save();MT.phase='event';MT.ev=0;MT.gi=0;render()}
+function rMeet(){if(!MT)return go('home');if(MT.phase==='intro')return meetIntro();if(MT.phase==='final')return meetFinal();meetEvent()}
+function meetIntro(){const l=LV[MT.team],R=routineOf(MT.team);
+ $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="MT=null;go('cls',{lvl:'${l.id}'})">← ${l.name}</button><div class="title"><h1>🏆 ${MT.name}</h1><div class="sub">Season ${S.season} meet · ${l.em} ${l.name}</div></div></div>
+ <div class="ask"><div class="q">Competing gyms</div>${MT.gyms.map(gm=>`<div class="mrow ${gm.own?'own':''}">${gm.girls.slice(0,5).map(x=>face(x.g)).join('')}<b>${gm.name}</b><span class="r">${gm.girls.length} gymnasts</span></div>`).join('')}</div>
+ <div class="ask" style="margin-top:12px"><div class="q">Your routines</div>${RT_EVENTS.map(ev=>`<div class="mrow">${EV(ev).e} <b>${EV(ev).n}</b> ${R[ev].map(id=>SK[id].n).join(' → ')||'<i>empty!</i>'}<span class="r">SV ${fmt(startValue(ev,R[ev]))}</span></div>`).join('')}</div>
+ <div class="row" style="margin-top:14px"><button class="btn ghost" onclick="go('routine',{lvl:MT.team,ev:'vault',back:'meet'})">📝 Edit routines</button><button class="btn pink" onclick="meetGo()">Start the meet! 🎉</button></div>
+ <div class="hint">Once the meet starts, ${l.name} is done competing until next season.</div>`}
+function meetEvent(){
+ const ev=RT_EVENTS[MT.ev];
+ $app.innerHTML=`<div class="top"><div class="title"><h1>🏆 ${MT.name}</h1><div class="sub">Event ${MT.ev+1} of 4 · ${EV(ev).e} ${EV(ev).n}</div></div><button class="btn ghost small" onclick="meetSkipAll()">⏩ Skip to final results</button></div>
+ <div class="stage"><svg id="mstage" viewBox="0 22 400 208" xmlns="http://www.w3.org/2000/svg"></svg><div class="lbl" id="slbl"></div><div class="ctrl"><button class="btn ghost small" id="skp" onclick="meetSkipOne()">⏭ Skip routine</button></div></div>
+ <div class="who" id="who"></div><div class="ask" id="board"></div>`;
+ if(MT.phase==='eventDone')return eventDone();
+ meetNextGirl();
+}
+function meetWho(x,ev,txt){const own=MT.gyms[0].girls;document.getElementById('who').innerHTML=`${face(x.g)}<div style="flex:1"><div class="nm">${x.first} <span style="font-size:14px;opacity:.6">${EV(ev).n}</span></div><div style="font-size:14px;font-weight:800">${txt}</div></div>
+ <div class="line">${own.map((y,i)=>face(y.g).replace('<svg ',`<svg class="${i===MT.gi?'cur':i<MT.gi?'dn':''}" `)).join('')}</div>`}
+function meetNextGirl(){
+ const own=MT.gyms[0].girls,ev=RT_EVENTS[MT.ev];
+ if(MT.gi>=own.length){MT.phase='eventDone';return eventDone()}
+ const x=own[MT.gi],perf=x.perf[ev];showBoard();
+ if(!perf.skills.length){x.shown[ev]=1;meetWho(x,ev,'No routine — score 0.000');return girlDone()}
+ const tok=++MT.tok;let k=0;
+ const nx=()=>{if(tok!==MT.tok)return;if(k>=perf.skills.length)return girlDone();const it=perf.skills[k++],sk=SK[it.id];
+  document.getElementById('mstage').innerHTML=sceneSVG(sk,MT.team)+'<g id="fig"></g>';
+  lbl(`${k}/${perf.skills.length} · ${sk.n}${it.fall?' — 😬 Fall!':''}`);
+  meetWho(x,ev,`Skill ${k} of ${perf.skills.length}: ${sk.n}`);
+  const A=buildAnim(sk,x.g,it.fault);if(it.fall)A.wobble=1;play(A,x.g,nx)};
+ nx();
+}
+function girlDone(){
+ const own=MT.gyms[0].girls,ev=RT_EVENTS[MT.ev],x=own[MT.gi],p=x.perf[ev];MT.tok++;cancelAnimationFrame(RAF);x.shown[ev]=1;
+ lbl(`${x.first}: ${fmt(x.sc[ev])}`);
+ meetWho(x,ev,`<span style="font-size:24px;color:var(--purple)">${fmt(x.sc[ev])}</span> &nbsp;<span style="opacity:.6">Start value ${fmt(p.sv)}${p.falls?` · ${p.falls} fall${p.falls>1?'s':''}`:''}</span>`);
+ const sk=document.getElementById('skp');if(sk)sk.style.display='none';
+ showBoard();document.getElementById('board').insertAdjacentHTML('afterbegin',`<div class="row" style="margin-bottom:10px"><button class="btn" onclick="MT.gi++;const s=document.getElementById('skp');if(s)s.style.display='';meetNextGirl()">${MT.gi+1<own.length?'Next gymnast →':'See '+EV(ev).n+' results →'}</button></div>`);
+}
+function meetSkipOne(){girlDone()}
+function rankRows(get){const rows=[];for(const gm of MT.gyms)for(const x of gm.girls){const v=get(x,gm);if(v!=null)rows.push({x,gm,v})}rows.sort((a,b)=>b.v-a.v);let r=0,prev=null;rows.forEach((o,i)=>{if(o.v!==prev){r=i+1;prev=o.v}o.rank=r});return rows}
+const MED=['','🥇','🥈','🥉'];
+function rowHTML(o,final){return`<div class="mrow ${o.gm.own?'own':''}"><b style="width:26px">${final&&o.rank<=3?MED[o.rank]:o.rank+'.'}</b>${face(o.x.g)}<div><b>${o.x.first} ${o.x.last}</b><div style="font-size:12px;opacity:.6">${o.gm.name}</div></div><span class="r">${fmt(o.v)}</span></div>`}
+function showBoard(final){const ev=RT_EVENTS[MT.ev];const rows=rankRows((x,gm)=>(!gm.own||x.shown[ev])?x.sc[ev]:null);
+ const waiting=MT.gyms[0].girls.filter(x=>!x.shown[ev]).length;
+ document.getElementById('board').innerHTML=`<div class="q">${EV(ev).e} ${EV(ev).n} ${final?'results':'scoreboard'}</div>${rows.map(o=>rowHTML(o,final)).join('')}${waiting&&!final?`<div class="hint">${waiting} Spencer gymnast${waiting>1?'s':''} still to compete</div>`:''}`}
+function eventDone(){
+ const ev=RT_EVENTS[MT.ev];cancelAnimationFrame(RAF);document.getElementById('mstage').innerHTML='<rect width="400" height="260" fill="#f6f0ff"/><text x="200" y="130" text-anchor="middle" font-size="26" font-weight="900" fill="#7b3fe4" font-family="ui-rounded,system-ui">'+EV(ev).e+' '+EV(ev).n+' complete!</text>';
+ lbl('');document.getElementById('skp').style.display='none';document.getElementById('who').style.display='none';
+ showBoard(true);
+ document.getElementById('board').insertAdjacentHTML('beforeend',`<div class="row" style="margin-top:12px"><button class="btn pink" onclick="meetNextEvent()">${MT.ev<3?'Next event: '+EV(RT_EVENTS[MT.ev+1]).e+' '+EV(RT_EVENTS[MT.ev+1]).n+' →':'See final results 🏆'}</button></div>`);
+}
+function meetNextEvent(){if(MT.ev<3){MT.ev++;MT.gi=0;MT.phase='event'}else MT.phase='final';render();window.scrollTo(0,0)}
+function meetSkipAll(){MT.tok++;cancelAnimationFrame(RAF);for(const x of MT.gyms[0].girls)RT_EVENTS.forEach(e=>x.shown[e]=1);MT.phase='final';render()}
+function meetFinal(){
+ cancelAnimationFrame(RAF);const l=LV[MT.team];
+ const aa=rankRows(x=>RT_EVENTS.reduce((a,e)=>a+x.sc[e],0));
+ const teams=MT.gyms.map(gm=>({gm,v:RT_EVENTS.reduce((a,e)=>a+gm.girls.map(x=>x.sc[e]).sort((p,q)=>q-p).slice(0,3).reduce((s,v)=>s+v,0),0)})).sort((a,b)=>b.v-a.v);
+ const tPlace=teams.findIndex(t=>t.gm.own)+1;
+ if(!MT.awarded){MT.awarded=1;let pts=0;const med={};
+  const give=(x,r)=>{if(r>3)return;const k=['gold','silver','bronze'][r-1];x.g.medals=x.g.medals||{gold:0,silver:0,bronze:0};x.g.medals[k]++;pts+=[30,20,10][r-1];med[x.first]=(med[x.first]||'')+MED[r]};
+  for(const ev of RT_EVENTS)rankRows(x=>x.sc[ev]).forEach(o=>{if(o.gm.own)give(o.x,o.rank)});
+  aa.forEach(o=>{if(o.gm.own)give(o.x,o.rank)});
+  pts+=[0,150,100,50][tPlace]||0;MT.pts=pts;MT.med=med;S.pts+=pts;
+  S.meetLog.push({season:S.season,name:MT.name,team:MT.team,place:tPlace,best:aa.find(o=>o.gm.own)?.x.first});save();
+  if(tPlace===1)confetti();
+ }
+ const own=MT.gyms[0].girls;
+ $app.innerHTML=`<div class="top"><div class="title"><h1>🏆 ${MT.name} — Final Results</h1><div class="sub">Season ${S.season} · ${l.em} ${l.name}</div></div><button class="btn" onclick="MT=null;go('cls',{lvl:'${l.id}'})">Back to ${l.name}</button></div>
+ <div class="banner">${tPlace===1?'🏆 TEAM CHAMPIONS!':`Team place: ${['','1st','2nd','3rd','4th'][tPlace]}`} &nbsp;·&nbsp; +${MT.pts} ⭐ coach points</div>
+ <div class="podium">${[1,0,2].map(i=>aa[i]?`<div class="pd p${i+1}">${face(aa[i].x.g)}<div class="nm">${MED[aa[i].rank]||''} ${aa[i].x.first}</div><div class="meta">${aa[i].gm.own?'⭐ ':''}${aa[i].gm.name}</div><div class="sc">${fmt(aa[i].v)}</div></div>`:'').join('')}</div>
+ <div class="events" style="margin-top:12px">
+ <div class="ask"><div class="q">Team standings</div>${teams.map((t,i)=>`<div class="mrow ${t.gm.own?'own':''}"><b style="width:26px">${i<3?MED[i+1]:(i+1)+'.'}</b><b>${t.gm.name}</b><span class="r">${fmt(t.v)}</span></div>`).join('')}<div class="hint">Team score adds the top 3 scores on each event.</div></div>
+ <div class="ask"><div class="q">All-around</div>${aa.map(o=>rowHTML(o,true)).join('')}</div></div>
+ <div class="ask" style="margin-top:12px;overflow:auto"><div class="q">Spencer gymnasts</div><table class="res"><tr><th></th>${RT_EVENTS.map(e=>`<th>${EV(e).e}</th>`).join('')}<th>AA</th><th>Medals</th></tr>
+ ${own.map(x=>`<tr><td><b>${x.first}</b></td>${RT_EVENTS.map(e=>`<td>${fmt(x.sc[e])}</td>`).join('')}<td><b>${fmt(RT_EVENTS.reduce((a,e)=>a+x.sc[e],0))}</b></td><td>${MT.med[x.first]||''}</td></tr>`).join('')}</table></div>`;
+}
+
+/* ---- time: arrivals & seasons ---- */
+function newSeason(){
+ S.season++;const grads=[],moved=[];
+ for(const g of S.girls.slice()){g.age++;
+  if(g.age>16){grads.push(g.first);S.hof.push({first:g.first,last:g.last,lvl:g.lvl,total:Object.values(g.sk).filter(x=>x.done).length,hairC:g.hairC,style:g.style,eyeC:g.eyeC,skin:g.skin,leoC:g.leoC,acc:g.acc,freck:g.freck,age:17});S.girls.splice(S.girls.indexOf(g),1);continue}
+  const l=LV[g.lvl];if(l.max<g.age&&!l.team){const to=g.age<=6?'kinder':g.age<=10?'sparkle':l.id==='sparkle'?'stars':null;if(to&&to!==g.lvl){g.lvl=to;moved.push(g.first+' → '+LV[to].name)}}}
+ for(const g of S.queue)g.age=Math.min(16,g.age+1);
+ save();toast(`🎂 Season ${S.season}! Everyone had a birthday.${moved.length?' Moved up by age: '+moved.join(', ')+'.':''}${grads.length?' 🎓 Graduated: '+grads.join(', ')+'!':''}`,6000);
+}
+setInterval(()=>{
+ if(!S||!COACH||document.visibilityState!=='visible')return;S.play++;
+ if(S.play>=S.nextArr){S.nextArr+=1200;const n=2+rnd(3);for(let i=0;i<n;i++)S.queue.push(makeGirl());save();toast(`🛎️ ${n} new gymnasts just signed up!`);
+  if(SCREEN!=='practice')checkQueue();else if(SCREEN==='practice'&&PR&&PR.i>=PR.ids.length)checkQueue();}
+ if(S.play>=S.nextSea){S.nextSea+=1800;newSeason();if(SCREEN!=='practice')render()}
+ const a=document.getElementById('tArr'),b=document.getElementById('tSea');if(a)a.textContent=mmss(S.nextArr-S.play);if(b)b.textContent=mmss(S.nextSea-S.play);
+ if(S.play%10===0)saveLocal();
+},1000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveLocal()});
+render();
+/* ===== Sync (GitHub) — GitHub Pages build only ===== */
+const Sync=(()=>{
+ const GH={owner:"ShawnJSpencer",repo:"gym-academy",branch:"sync-data",path:"sync.json"};
+ const API=`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path}`;
+ const LSg=k=>{try{return localStorage.getItem(k)||""}catch(e){return ""}};
+ const LSs=(k,v)=>{try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}};
+ // Same site as Wild Run, Agility Club and the NFL app, so a key saved there is tried first; it only sticks if it can reach gym-academy.
+ let token=LSg("gym.ghtoken"),borrowed=false;
+ if(!token&&LSg("gym.sync")!=="off"){token=LSg("agility.ghtoken")||LSg("wildrun.ghtoken")||LSg("sfe.ghtoken");borrowed=!!token;if(borrowed)LSs("gym.firstsync","1");}
+ let busy=false,again=false,timer=null,status=token?"idle":"off",lastOk=0;
+ const hdr=t=>({Authorization:"Bearer "+(t||token),Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"});
+ const b64d=s=>new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g,"")),c=>c.charCodeAt(0)));
+ const b64e=s=>{let x="";new TextEncoder().encode(s).forEach(c=>x+=String.fromCharCode(c));return btoa(x)};
+ const all=()=>{const p={};COACHES.forEach(c=>{const s=c.n===COACH&&S?S:load(c.n);if(s)p[c.n]=s});return{v:1,players:p}};
+ async function pull(){
+  const r=await fetch(`${API}?ref=${GH.branch}&_=${Date.now()}`,{headers:hdr(),cache:"no-store"});
+  if(r.status===404)return{data:null,sha:null};
+  if(!r.ok)throw new Error(String(r.status));
+  const j=await r.json();let data=null;try{data=JSON.parse(b64d(j.content||""))}catch(e){}
+  return{data,sha:j.sha};
+ }
+ async function push(sha){
+  const body={message:"sync",content:b64e(JSON.stringify(all())),branch:GH.branch};if(sha)body.sha=sha;
+  const r=await fetch(API,{method:"PUT",headers:Object.assign(hdr(),{"Content-Type":"application/json"}),body:JSON.stringify(body)});
+  if(r.status===409||r.status===422)return false;
+  if(!r.ok)throw new Error(String(r.status));
+  return true;
+ }
+ // Each coach's gym syncs separately: the newer save wins. On a device's first sync, saved gyms win over this device.
+ function merge(remote){
+  const rp=(remote&&remote.v===1&&remote.players)||{},first=LSg("gym.firstsync")==="1";let changed=[],pushIt=!remote;
+  COACHES.forEach(({n})=>{
+   const r=rp[n],l=n===COACH&&S?S:load(n);
+   if(r&&(!l||first||(r.u||0)>(l.u||0))){if(JSON.stringify(r)!==JSON.stringify(l)){try{localStorage.setItem(KEY(n),JSON.stringify(r))}catch(e){}changed.push(n)}}
+   else if(l&&(!r||(l.u||0)>(r.u||0)))pushIt=true;
+  });
+  return{changed,push:pushIt};
+ }
+ const busyScreen=()=>SCREEN==='practice'||SCREEN==='meet'||$m.classList.contains('on');
+ async function run(){
+  if(!token)return;
+  if(busyScreen()){clearTimeout(timer);timer=setTimeout(run,8000);return} // never swap saves mid-practice or mid-meet
+  if(!navigator.onLine){setStatus("error");return}
+  if(busy){again=true;return}
+  busy=true;clearTimeout(timer);setStatus("syncing");
+  try{
+   let ok=false;
+   for(let i=0;i<4&&!ok;i++){
+    const {data,sha}=await pull();
+    if(busyScreen())break;
+    const m=merge(data);
+    if(m.changed.length){
+     if(COACH&&m.changed.includes(COACH)){S=load(COACH);migrate();if(SCREEN==='cls'&&!LV[CUR.lvl])go('home');else render()}
+     else if(SCREEN==='who')render();}
+    ok=!m.push||await push(sha);
+   }
+   LSs("gym.firstsync","");
+   if(borrowed){LSs("gym.ghtoken",token);borrowed=false;}
+   lastOk=Date.now();setStatus("ok");
+  }catch(e){
+   if(borrowed){token="";borrowed=false;LSs("gym.firstsync","");setStatus("off");}
+   else setStatus(["401","403","404"].includes(e.message)?"badtoken":"error");
+  }
+  busy=false;if(again){again=false;run()}
+ }
+ function soon(){if(!token)return;clearTimeout(timer);timer=setTimeout(run,2500)}
+ function ago(){const s=Math.round((Date.now()-lastOk)/1000);return s<20?"just now":s<3600?Math.round(s/60)+" min ago":"a while ago"}
+ function setStatus(s){status=s;paint()}
+ function paint(){const b=document.getElementById("syncBtn");if(!b)return;
+  const map={off:["off","Sync iPhone + iPad"],idle:["","Synced"],syncing:["busy","Syncing…"],ok:["","Synced · "+ago()],error:["warn","Offline · will retry"],badtoken:["warn","Sync key not working · tap to fix"]};
+  const [cls,txt]=map[status]||map.off;b.className="syncbtn "+cls;b.querySelector("span").textContent=txt;}
+ async function check(t){
+  const r=await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}`,{headers:hdr(t),cache:"no-store"});
+  if(r.status===401)return"GitHub didn't accept that key. Make sure you copied the whole thing.";
+  if(r.status===404)return"That key can't see the gym-academy repo. Give it access to gym-academy.";
+  if(!r.ok)return"GitHub said "+r.status+". Try again in a minute.";
+  const j=await r.json();
+  if(j.permissions&&j.permissions.push===false)return'That key is read-only. Set Contents to "Read and write".';
+  return"";}
+ return{get on(){return!!token},run,soon,paint,check,
+  setToken(t){token=t;borrowed=false;LSs("gym.ghtoken",t);LSs("gym.sync",t?"":"off");LSs("gym.firstsync",t?"1":"");status=t?"idle":"off";paint();if(t)run();}};
+})();
+syncHook=()=>Sync.soon();
+
+/* sync UI */
+(function(){
+ if(!location.hostname.endsWith('github.io'))return; // sync only on the GitHub Pages copy
+ const $=id=>document.getElementById(id);
+ const st=document.createElement("style");st.textContent=`
+ .syncbtn{all:unset;cursor:pointer;position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:15;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;padding:7px 12px;border-radius:999px;background:#fff;color:var(--ink);box-shadow:0 3px 12px #7b3fe433;white-space:nowrap}
+ .syncbtn::before{content:"";width:9px;height:9px;border-radius:50%;background:#2fc26f}
+ .syncbtn.off::before{background:#a59cb8}.syncbtn.busy::before{background:#ffc94d}.syncbtn.warn::before{background:#ff5d73}
+ .sheet{position:fixed;inset:0;z-index:45;background:#2b1d4e88;display:flex;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+ .sheet[hidden]{display:none}
+ .sbox{background:#fff;color:var(--ink);border-radius:22px;padding:18px;max-width:460px;width:100%;display:flex;flex-direction:column;gap:10px}
+ .sbox h2{font-weight:900}.sbox ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+ .sbox input{font:inherit;padding:10px 12px;border:2px solid #e3d8f7;border-radius:12px;width:100%;-webkit-user-select:text;user-select:text}
+ .tokmsg{font-size:14px;font-weight:700;min-height:1.2em}.tokmsg.bad{color:var(--bad)}.tokmsg.good{color:var(--ok)}`;
+ document.head.appendChild(st);
+ const btn=document.createElement("button");btn.className="syncbtn off";btn.id="syncBtn";btn.innerHTML="<span>Sync iPhone + iPad</span>";document.body.appendChild(btn);
+ const sh=document.createElement("div");sh.className="sheet";sh.id="syncSheet";sh.hidden=true;
+ sh.innerHTML=`<div class="sbox" role="dialog" aria-label="Sync settings"><h2>Sync your gyms</h2><div class="hint" style="text-align:left" id="sheetState"></div>
+ <ol><li>On GitHub, open <b>Settings → Developer settings → Fine-grained tokens</b>.</li>
+ <li>Edit your Wild Run / Agility Club key (or make a new one) so it can reach the <b>gym-academy</b> repo with <b>Contents: Read and write</b>.</li>
+ <li>Copy the key (it starts with <b>github_pat_</b>) and paste it here. Do this once on each device.</li></ol>
+ <input id="tok" type="password" autocomplete="off" placeholder="github_pat_…" aria-label="GitHub key">
+ <div class="tokmsg" id="tokMsg" aria-live="polite"></div>
+ <div class="row"><button class="btn small" id="tokPaste">Paste key</button><button class="btn small pink" id="tokSave">Save</button><button class="btn small ghost" id="tokOff" hidden>Turn off sync</button><button class="btn small ghost" id="tokClose">Close</button></div></div>`;
+ document.body.appendChild(sh);
+ const msgTok=(t,c)=>{$("tokMsg").textContent=t;$("tokMsg").className="tokmsg "+(c||"");};
+ btn.onclick=()=>{$("tok").value="";msgTok("");$("tokOff").hidden=!Sync.on;$("sheetState").textContent=Sync.on?"Sync is on for this device.":"Sync is off for this device. When you turn it on, this device loads the family's saved gyms.";sh.hidden=false;};
+ $("tokClose").onclick=()=>{sh.hidden=true};
+ sh.addEventListener("click",e=>{if(e.target===sh)sh.hidden=true});
+ $("tokPaste").onclick=async()=>{let t="";
+  try{t=((await navigator.clipboard.readText())||"").trim()}catch(e){msgTok("Couldn't read the clipboard. Paste into the box instead.","bad");return}
+  const m=t.match(/(github_pat_[A-Za-z0-9_]+|gh[pousr]_[A-Za-z0-9]+)/);
+  if(!m){msgTok("No GitHub key on your clipboard. Copy the key (starts with github_pat_) and try again.","bad");return}
+  $("tok").value=m[1];$("tokSave").click();};
+ $("tokSave").onclick=async()=>{const t=$("tok").value.trim();if(!t){msgTok("Paste your key first.","bad");return}
+  msgTok("Checking with GitHub…");let err="";try{err=await Sync.check(t)}catch(e){err="Couldn't reach GitHub. Check your connection."}
+  if(err){msgTok(err,"bad");return}
+  Sync.setToken(t);msgTok("Connected! This device will now stay in sync.","good");$("tokOff").hidden=false;$("sheetState").textContent="Sync is on for this device.";
+  setTimeout(()=>{sh.hidden=true},1400);};
+ $("tokOff").onclick=()=>{Sync.setToken("");sh.hidden=true};
+ setInterval(()=>{if(document.visibilityState==="visible"){Sync.run();Sync.paint();}},45000);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")Sync.run()});
+ addEventListener("online",()=>Sync.run());
+ Sync.paint();Sync.run();
+})();
+
+const APP_VERSION='1794705117';
+/* ===== Auto-update: load the newest version even if the phone saved an old copy ===== */
+(function(){
+ async function check(){
+  if(SCREEN==='practice'||SCREEN==='meet')return; // never interrupt practice or a meet
+  try{
+   const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;
+   const v=String((await r.json()).v||"");if(!v||v===APP_VERSION)return;
+   let tried="";try{tried=sessionStorage.getItem("gym.tried")||""}catch(e){}
+   if(tried===v)return;
+   try{sessionStorage.setItem("gym.tried",v)}catch(e){}
+   saveLocal();location.replace(location.pathname+"?v="+encodeURIComponent(v));
+  }catch(e){}
+ }
+ if(location.protocol.startsWith('http')&&location.hostname.endsWith('github.io')){check();
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")check();});
+  setInterval(()=>{if(document.visibilityState==="visible")check();},5*60*1000);}
+})();
+
+</script>
+</body>
+</html>
