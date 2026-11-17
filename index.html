@@ -112,6 +112,7 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
 .mrow{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;font-weight:700;font-size:14px}.mrow:nth-child(odd){background:var(--soft)}.mrow .r{margin-left:auto;font-weight:900;font-size:16px;white-space:nowrap;padding-left:8px}.mrow.own{background:#fff1c9!important}.mrow svg{width:30px;height:30px;border-radius:50%;flex:none}
 .podium{display:flex;gap:10px;justify-content:center;align-items:flex-end;margin-top:6px}.pd{background:#fff;border-radius:20px;padding:10px;text-align:center;width:150px;box-shadow:0 6px 18px #7b3fe41f}.pd svg{width:80px;border-radius:50%}.pd .nm{font-weight:900}.pd .meta{font-size:11px;opacity:.6;font-weight:700}.pd .sc{font-weight:900;font-size:20px;color:var(--purple)}.pd.p1{padding-bottom:34px;border:3px solid #ffd84d}.pd.p2{padding-bottom:20px}
 table.res{width:100%;border-collapse:collapse;font-size:14px}table.res td,table.res th{padding:6px;text-align:center;border-bottom:1px solid #eee6fb}table.res td:first-child{text-align:left}
+.cbar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:18px;padding:10px 12px;margin-bottom:12px;box-shadow:0 4px 12px #7b3fe41a;flex-wrap:wrap}.cbar svg{width:48px;height:48px;border-radius:50%;flex:none}.cbar b{font-weight:900;font-size:16px}.cbar .m{font-size:13px;font-weight:700;opacity:.7}
 .hint{font-size:13px;opacity:.7;font-weight:700;text-align:center;margin-top:8px}
 </style>
 </head>
@@ -183,14 +184,14 @@ function load(n){try{const t=localStorage.getItem(KEY(n));return t?JSON.parse(t)
 let syncHook=null;
 function saveLocal(){if(!COACH||!S)return;try{localStorage.setItem(KEY(COACH),JSON.stringify(S))}catch(e){}}
 function save(){if(!COACH||!S)return;S.u=Date.now();saveLocal();if(syncHook)syncHook()}
-function newSave(){const s={v:1,girls:[],queue:[],used:[],nid:1,play:0,nextArr:1200,nextSea:1800,pts:0,season:1,hof:[],st:{ok:0,no:0,mast:0}};S=s;for(let i=0;i<20;i++)s.queue.push(makeGirl());return s}
+function newSave(){const s={v:1,girls:[],queue:[],used:[],nid:1,play:0,nextArr:1200,nextSea:1800,pts:0,season:1,hof:[],st:{ok:0,no:0,mast:0}};S=s;for(let i=0;i<20;i++){const[a,b]=[[3,4],[5,6],[7,10],[11,16]][i%4];s.queue.push(makeGirl(a+rnd(b-a+1)))}s.queue=shuffle(s.queue);return s}
 
-function makeGirl(){
+function makeGirl(age){
  const used=new Set(S.used);let pool=FIRST.filter(n=>!used.has(n));let first;
  if(pool.length)first=pick(pool);else first=pick(FIRST);
  S.used.push(first);
  const h=pick(HAIR),e=pick(EYES),l=pick(LEOS);
- return{id:S.nid++,first,last:pick(LAST),age:3+rnd(14),hair:h[0],hairC:h[1],style:pick(STYLES),eye:e[0],eyeC:e[1],
+ return{id:S.nid++,first,last:pick(LAST),age:age!=null?age:3+rnd(14),hair:h[0],hairC:h[1],style:pick(STYLES),eye:e[0],eyeC:e[1],
   skin:pick(SKIN),leo:l[0],leoC:l[1],acc:pick(ACC),freck:Math.random()<.25,trait:pick(TRAITS),fav:pick(EVENTS).n,
   animal:pick(ANIMALS),snack:pick(SNACKS),dream:pick(DREAMS),talent:Math.random(),lvl:null,sk:{},joined:S.season};
 }
@@ -667,7 +668,7 @@ function confetti(){const em=['🎉','⭐','✨','🏅','💖','🎊'];for(let i
 const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 
 function go(sc,o={}){cancelAnimationFrame(RAF);SCREEN=sc;CUR=o;render();window.scrollTo(0,0)}
-function render(){({who:rWho,home:rHome,cls:rClass,practice:rPractice,roster:rRoster,hof:rHof,routine:rRoutine,meet:rMeet})[SCREEN]()}
+function render(){({who:rWho,home:rHome,cls:rClass,practice:rPractice,roster:rRoster,hof:rHof,staff:rStaff,routine:rRoutine,meet:rMeet})[SCREEN]()}
 
 function rWho(){
  $app.innerHTML=`<div style="text-align:center;padding-top:30px"><div style="font-size:60px">🤸‍♀️</div>
@@ -679,7 +680,7 @@ function pickCoach(n){COACH=n;S=load(n)||newSave();migrate();save();go('home');c
 function rHome(){
  const pend=S.queue.length;
  $app.innerHTML=`<div class="top"><div class="title"><h1>Spencer Gymnastics Academy</h1><div class="sub">Coach ${COACH} · ${title()} · Season ${S.season}</div></div>
- <button class="btn ghost small" onclick="go('roster')">👧 All Gymnasts</button><button class="btn ghost small" onclick="go('hof')">🏆 Hall of Fame</button><button class="btn ghost small" onclick="go('who')">🔄 Switch Coach</button></div>
+ <button class="btn ghost small" onclick="go('roster')">👧 All Gymnasts</button><button class="btn ghost small" onclick="go('staff')">🧢 Coaches</button><button class="btn ghost small" onclick="go('hof')">🏆 Hall of Fame</button><button class="btn ghost small" onclick="go('who')">🔄 Switch Coach</button></div>
  <div class="stats"><span class="chip">⭐ ${S.pts} pts</span><span class="chip">👧 ${S.girls.length} gymnasts</span><span class="chip">🏅 ${S.st.mast} skills mastered</span>
  <span class="chip">🆕 New gymnasts in <span id="tArr">${mmss(S.nextArr-S.play)}</span></span><span class="chip">🎂 Next season in <span id="tSea">${mmss(S.nextSea-S.play)}</span></span></div>
  ${pend?`<div class="banner">🛎️ ${pend} new gymnast${pend>1?'s are':' is'} waiting at the front desk! <button class="btn small pink" onclick="checkQueue()">Meet them</button></div>`:''}
@@ -691,11 +692,12 @@ function rHome(){
 function lvlCard(l){const gs=S.girls.filter(g=>g.lvl===l.id);const rd=gs.filter(g=>{const r=readyInfo(g);return r&&r.ok}).length;
  return`<button class="lvl" onclick="go('cls',{lvl:'${l.id}'})"><div class="stripe" style="background:${l.col}"></div><span class="cnt">${gs.length} 👧</span><div class="em">${l.em}</div><h3>${l.name}</h3>
  <div class="ages">Ages ${l.min}${l.max>=16?'+':'–'+l.max} · ${l.desc}</div>${rd?`<span class="tag">⬆️ ${rd} ready to move up</span>`:''}
- <div class="faces">${gs.slice(0,9).map(face).join('')}</div></button>`}
+ ${coachOf(l.id)?`<span class="tag" style="background:#efe4ff;color:var(--purple)">🧢 Coach ${coachOf(l.id).first}</span>`:''}<div class="faces">${gs.slice(0,9).map(face).join('')}</div></button>`}
 
 function rClass(){
  const l=LV[CUR.lvl],gs=S.girls.filter(g=>g.lvl===l.id),set=SETS[l.set];
  $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="go('home')">← Gym</button><div class="title"><h1>${l.em} ${l.name}</h1><div class="sub">Ages ${l.min}${l.max>=16?'+':'–'+l.max} · ${l.desc} · ${gs.length} gymnasts</div></div></div>
+ ${coachBar(l)}
  ${l.team?teamBar(l,gs):''}
  ${gs.length?`<div class="roster">${gs.map(gCard).join('')}</div>`:`<div class="ask"><div class="q">No gymnasts in this ${l.team?'team':'class'} yet.</div><div class="hint">${l.entry?'Place new gymnasts here when they sign up.':'Gymnasts join by moving up from the level before.'}</div></div>`}
  <div class="sect">Coach a skill</div><div class="events">${EVENTS.map(e=>`<div class="ev"><h3>${e.e} ${e.n}</h3>${set.filter(s=>s.ev===e.id).map(s=>{const m=gs.filter(g=>g.sk[s.id]&&g.sk[s.id].done).length;
@@ -716,7 +718,7 @@ function rRoster(){
 }
 function rHof(){
  $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="go('home')">← Gym</button><div class="title"><h1>🏆 Hall of Fame</h1><div class="sub">Gymnasts who graduated after turning 17</div></div></div>
- ${S.hof.length?`<div class="roster">${S.hof.map(h=>`<div class="gcard">${face(h)}<div class="nm">${h.first} ${h.last}</div><div class="meta">${LV[h.lvl].em} ${LV[h.lvl].name}<br>${h.total} skills mastered</div></div>`).join('')}</div>`:'<div class="ask"><div class="q">No graduates yet!</div><div class="hint">When a gymnast turns 17 she graduates and joins the Hall of Fame.</div></div>'}`;
+ ${S.hof.length?`<div class="roster">${S.hof.map(h=>`<div class="gcard">${face(h)}<div class="nm">${h.first} ${h.last}</div><div class="meta">${LV[h.lvl].em} ${LV[h.lvl].name}<br>${h.total} skills mastered${h.coach?'<br>🧢 Coaching '+LV[h.coach].name:''}</div></div>`).join('')}</div>`:'<div class="ask"><div class="q">No graduates yet!</div><div class="hint">When a gymnast turns 17 she graduates and joins the Hall of Fame.</div></div>'}`;
 }
 
 function girlModal(id){
@@ -733,7 +735,8 @@ function promote(id){const g=G(id),r=readyInfo(g);if(!r||!r.ok)return;g.lvl=r.lv
 
 /* ---- placement ---- */
 let QTOTAL=0;
-function checkQueue(){if(!S.queue.length){QTOTAL=0;return}if($m.classList.contains('on'))return;if(!QTOTAL)QTOTAL=S.queue.length;showNew()}
+function checkQueue(){if(S.gradQ&&S.gradQ.length){if(!$m.classList.contains('on')&&SCREEN!=='practice'&&SCREEN!=='meet')showGrad();return}
+ if(!S.queue.length){QTOTAL=0;return}if($m.classList.contains('on'))return;if(!QTOTAL)QTOTAL=S.queue.length;showNew()}
 function showNew(){
  if(!S.queue.length){QTOTAL=0;return}
  const g=S.queue[0],num=QTOTAL-S.queue.length+1;
@@ -801,7 +804,7 @@ function guess(i){
  ask.querySelectorAll('.row').forEach(r=>r.remove());
  PR.opts.forEach((x,j)=>{const b=document.getElementById('op'+j);b.disabled=true;b.onclick=null;if(x===PR.fault)b.classList.add(o===x?'right':'wrong');else if(j===i)b.classList.add('wrong');else b.classList.add('dim')});
  if(o===PR.fault){
-  p.p++;p.last=PR.fault;S.pts+=10;S.st.ok++;PR.ok++;const now=p.p>=p.need;
+  const was=p.done;p.p++;p.last=PR.fault;S.pts+=10;S.st.ok++;PR.ok++;const now=!was&&p.p>=p.need;
   if(now){p.done=1;S.st.mast++;S.pts+=50;PR.newM.push(g.first)}
   save();whoBar();
   ask.insertAdjacentHTML('beforeend',`<div class="msg ok" style="margin-top:12px">✅ Great eye, Coach! +10 ⭐</div><div style="text-align:center"><span class="coach">🗣️ “${FAULTS[PR.fault].fix}”</span></div><div class="hint" id="fixh">Watch ${g.first} try it again…</div>`);
@@ -835,7 +838,8 @@ const EV=id=>EVENTS.find(e=>e.id===id);
 const fmt=x=>x.toFixed(3),r025=x=>Math.round(x*40)/40;
 const RIVAL_GYMS=['Red Rock Tumblers','Wasatch Flyers','Timpanogos Twisters','Bonneville Elite','Canyon Kids Gym','Summit Stars Gymnastics','Desert Sky Gymnastics','Alpine Aerials','Salt Flats Flippers','Zion Gymnastics Club'];
 const MEETS=['Snowflake Invitational','Red Rock Classic','Arches Challenge','Golden Spike Invitational','Wasatch Winter Cup','Sundance Showcase','Bryce Canyon Classic','Great Salt Lake Open','Pioneer Cup','Timpanogos Twist & Shout'];
-function migrate(){for(const g of S.girls)for(const k in g.sk){const p=g.sk[k];if(p.need>MAXTRY)p.need=MAXTRY;if(!p.done&&p.p>=p.need){p.done=1;S.st.mast++}}
+function migrate(){S.gradQ=S.gradQ||[];for(const h of S.hof){if(h.id==null)h.id=S.nid++;if(h.coach===undefined)h.coach=null}
+ for(const g of S.girls)for(const k in g.sk){const p=g.sk[k];if(p.need>MAXTRY)p.need=MAXTRY;if(!p.done&&p.p>=p.need){p.done=1;S.st.mast++}}
  S.routines=S.routines||{};S.meetDone=S.meetDone||{};S.meetLog=S.meetLog||[]}
 function defaultRoutine(team){const ti=SETORDER.indexOf(LV[team].set),r={};
  for(const ev of RT_EVENTS){const pool=Object.values(SK).filter(s=>s.ev===ev&&tier(s)<=ti).sort((a,b)=>tier(a)-tier(b));
@@ -970,20 +974,87 @@ function meetFinal(){
  ${own.map(x=>`<tr><td><b>${x.first}</b></td>${RT_EVENTS.map(e=>`<td>${fmt(x.sc[e])}</td>`).join('')}<td><b>${fmt(RT_EVENTS.reduce((a,e)=>a+x.sc[e],0))}</b></td><td>${MT.med[x.first]||''}</td></tr>`).join('')}</table></div>`;
 }
 
+/* ============================ ASSISTANT COACHES ============================ */
+const LESSON=20; // seconds of play per lesson
+const coaches=()=>S.hof.filter(h=>h.coach);
+const coachOf=lvl=>S.hof.find(h=>h.coach===lvl);
+const HF=id=>S.hof.find(h=>h.id===id);
+function coachLesson(h){ // the earliest skill in the class that someone still needs
+ const gs=S.girls.filter(g=>g.lvl===h.coach);if(!gs.length)return null;
+ for(const s of SETS[LV[h.coach].set]){const who=gs.filter(g=>!(g.sk[s.id]&&g.sk[s.id].done)&&(!s.pre||(g.sk[s.pre]&&g.sk[s.pre].done)));if(who.length)return{s,who}}
+ return null}
+function coachStatus(h){const L=coachLesson(h);const gs=S.girls.filter(g=>g.lvl===h.coach);
+ if(!gs.length)return'Waiting for gymnasts to join';if(!L)return'Everyone has mastered every skill! 🎉';
+ return`Teaching the ${L.s.n} · ${gs.filter(g=>g.sk[L.s.id]&&g.sk[L.s.id].done).length}/${gs.length} mastered`}
+function coachTick(){let changed=false;
+ for(const h of coaches()){h.t=(h.t||0)+1;if(h.t<LESSON)continue;h.t=0;const L=coachLesson(h);if(!L)continue;const got=[];
+  for(const g of L.who){const p=prog(g,L.s.id);if(p.done)continue;p.p++;if(p.p>=p.need){p.done=1;S.st.mast++;got.push(g.first)}}
+  changed=true;if(got.length&&SCREEN!=='meet')toast(`🧢 Coach ${h.first}: ${got.join(', ')} mastered the ${L.s.n}! 🏅`);
+  if(SCREEN==='cls'&&CUR.lvl===h.coach&&!$m.classList.contains('on'))render();}
+ if(changed)save();
+ document.querySelectorAll('[data-les]').forEach(e=>{const h=coachOf(e.dataset.les);if(h)e.textContent=mmss(LESSON-(h.t||0))});
+}
+function coachBar(l){const h=coachOf(l.id);
+ if(!h){const free=S.hof.filter(x=>!x.coach).length;return`<div class="cbar"><span style="font-size:26px">🧢</span><div style="flex:1"><b>No assistant coach</b><div class="m">${free?'You have graduates you can hire to teach this class.':'Graduates can become coaches when they turn 17.'}</div></div>${free?`<button class="btn small" onclick="hireModal('${l.id}')">Hire a coach</button>`:''}</div>`}
+ return`<div class="cbar">${face(h)}<div style="flex:1"><b>Coach ${h.first} ${h.last}</b><div class="m">${coachStatus(h)} · next lesson in <span data-les="${l.id}">${mmss(LESSON-(h.t||0))}</span></div></div><button class="btn ghost small" onclick="go('staff')">Manage</button></div>`}
+
+/* ---- graduation popup ---- */
+function showGrad(){
+ const h=HF(S.gradQ[0]);if(!h){S.gradQ.shift();return checkQueue()}
+ openM(`<div style="text-align:center;font-weight:900;color:var(--pink);margin-bottom:8px">🎓 GRADUATION${S.gradQ.length>1?` · ${S.gradQ.length} graduates`:''}</div>
+ <div class="newtop">${face(h)}<div><h2>${h.first} ${h.last}</h2><div style="font-weight:800;opacity:.75">Turned 17 and graduated from ${LV[h.lvl].em} ${LV[h.lvl].name}</div>
+ <div class="facts"><b>Skills</b><span>${h.total} mastered</span>${h.medals?`<b>Medals</b><span>🥇 ${h.medals.gold} 🥈 ${h.medals.silver} 🥉 ${h.medals.bronze}</span>`:''}</div></div></div>
+ <div class="q" style="margin-top:14px;text-align:center;font-weight:900;font-size:19px">Should ${h.first} become a coach?</div>
+ <div class="hint">A coach teaches every skill in her class, one lesson every ${LESSON} seconds. You still decide who moves up.</div>
+ <div class="row" style="margin-top:12px"><button class="btn pink" onclick="assignModal(${h.id},'grad')">🧢 Yes, make her a coach</button><button class="btn ghost" onclick="gradDone()">🎓 No, just graduate</button></div>`)}
+function gradDone(){S.gradQ.shift();save();closeM();setTimeout(checkQueue,200)}
+
+/* ---- choose a class ---- */
+function assignModal(id,from){
+ const h=HF(id);
+ openM(`<div class="newtop">${face(h)}<div><h2>Coach ${h.first}</h2><div style="font-weight:800;opacity:.75">Which class should she be in charge of?</div></div></div>
+ <div class="place">${LEVELS.map(l=>{const c=coachOf(l.id),mine=c&&c.id===id,n=S.girls.filter(g=>g.lvl===l.id).length;
+  return`<button ${c&&!mine?'class="lock"':''} onclick="${c&&!mine?'':`assign(${id},'${l.id}','${from}')`}"><span style="font-size:24px">${l.em}</span>${l.name}<span class="a">${mine?'✓ Her class now':c?'Coach '+c.first:n+' gymnasts'}</span></button>`}).join('')}</div>
+ <div class="row" style="margin-top:12px"><button class="btn ghost" onclick="${from==='grad'?'showGrad()':'closeM()'}">← Back</button></div>`)}
+function assign(id,lvl,from){const h=HF(id),l=LV[lvl];if(coachOf(lvl)&&coachOf(lvl).id!==id)return;
+ h.coach=lvl;h.t=0;if(from==='grad')S.gradQ.shift();save();closeM();toast(`🧢 Coach ${h.first} is now in charge of ${l.em} ${l.name}!`);
+ render();setTimeout(checkQueue,200)}
+function hireModal(lvl){const free=S.hof.filter(x=>!x.coach);
+ openM(`<h2 style="font-weight:900">🧢 Hire a coach for ${LV[lvl].em} ${LV[lvl].name}</h2>
+ <div class="place">${free.map(h=>`<button onclick="assign(${h.id},'${lvl}','hire')">${face(h).replace('<svg ','<svg style="width:40px;height:40px;border-radius:50%" ')}${h.first} ${h.last}<span class="a">${h.total} skills · from ${LV[h.lvl].name}</span></button>`).join('')}</div>
+ <div class="row" style="margin-top:12px"><button class="btn ghost" onclick="closeM()">Cancel</button></div>`)}
+function fireModal(id){const h=HF(id);
+ openM(`<div class="newtop">${face(h)}<div><h2>Fire Coach ${h.first}?</h2><div style="font-weight:800;opacity:.75">She'll stop teaching ${LV[h.coach].em} ${LV[h.coach].name}. You can hire her again any time.</div></div></div>
+ <div class="row" style="margin-top:14px"><button class="btn pink" onclick="fire(${id})">Yes, fire her</button><button class="btn ghost" onclick="closeM()">Keep her</button></div>`)}
+function fire(id){const h=HF(id);toast(`Coach ${h.first} no longer teaches ${LV[h.coach].name}.`);h.coach=null;save();closeM();render()}
+
+function rStaff(){const cs=coaches(),free=S.hof.filter(h=>!h.coach);
+ $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="go('home')">← Gym</button><div class="title"><h1>🧢 Coaching Staff</h1><div class="sub">Graduates you hire teach a class for you</div></div></div>
+ <div class="sect">Your coaches (${cs.length})</div>
+ ${cs.length?cs.map(h=>`<div class="cbar">${face(h)}<div style="flex:1"><b>Coach ${h.first} ${h.last}</b><div class="m">${LV[h.coach].em} ${LV[h.coach].name} · ${coachStatus(h)}</div></div>
+  <button class="btn ghost small" onclick="go('cls',{lvl:'${h.coach}'})">Visit</button><button class="btn ghost small" onclick="assignModal(${h.id},'staff')">Change class</button><button class="btn small pink" onclick="fireModal(${h.id})">Fire</button></div>`).join(''):'<div class="hint" style="text-align:left">No coaches yet.</div>'}
+ <div class="sect">Graduates you can hire (${free.length})</div>
+ ${free.length?`<div class="roster">${free.map(h=>`<div class="gcard">${face(h)}<div class="nm">${h.first} ${h.last}</div><div class="meta">${LV[h.lvl].em} ${LV[h.lvl].name} · ${h.total} skills</div><button class="btn small" style="margin-top:6px" onclick="assignModal(${h.id},'staff')">Hire</button></div>`).join('')}</div>`:'<div class="hint" style="text-align:left">When a gymnast turns 17 and graduates, she shows up here.</div>'}`}
+
+/* ---- balanced sign-ups ---- */
+const BANDS=[[3,4],[5,6],[7,10],[11,16]];
+function newArrivals(){let out=[];while(!out.length)for(const[a,b]of BANDS)for(let i=0,n=rnd(3);i<n;i++)out.push(makeGirl(a+rnd(b-a+1)));return out}
+
 /* ---- time: arrivals & seasons ---- */
 function newSeason(){
  S.season++;const grads=[],moved=[];
  for(const g of S.girls.slice()){g.age++;
-  if(g.age>16){grads.push(g.first);S.hof.push({first:g.first,last:g.last,lvl:g.lvl,total:Object.values(g.sk).filter(x=>x.done).length,hairC:g.hairC,style:g.style,eyeC:g.eyeC,skin:g.skin,leoC:g.leoC,acc:g.acc,freck:g.freck,age:17});S.girls.splice(S.girls.indexOf(g),1);continue}
+  if(g.age>16){grads.push(g.first);const hid=S.nid++;S.gradQ.push(hid);S.hof.push({id:hid,coach:null,t:0,medals:g.medals,first:g.first,last:g.last,lvl:g.lvl,total:Object.values(g.sk).filter(x=>x.done).length,hairC:g.hairC,style:g.style,eyeC:g.eyeC,skin:g.skin,leoC:g.leoC,acc:g.acc,freck:g.freck,age:17});S.girls.splice(S.girls.indexOf(g),1);continue}
   const l=LV[g.lvl];if(l.max<g.age&&!l.team){const to=g.age<=6?'kinder':g.age<=10?'sparkle':l.id==='sparkle'?'stars':null;if(to&&to!==g.lvl){g.lvl=to;moved.push(g.first+' → '+LV[to].name)}}}
  for(const g of S.queue)g.age=Math.min(16,g.age+1);
  save();toast(`🎂 Season ${S.season}! Everyone had a birthday.${moved.length?' Moved up by age: '+moved.join(', ')+'.':''}${grads.length?' 🎓 Graduated: '+grads.join(', ')+'!':''}`,6000);
 }
 setInterval(()=>{
  if(!S||!COACH||document.visibilityState!=='visible')return;S.play++;
- if(S.play>=S.nextArr){S.nextArr+=1200;const n=2+rnd(3);for(let i=0;i<n;i++)S.queue.push(makeGirl());save();toast(`🛎️ ${n} new gymnasts just signed up!`);
+ if(S.play>=S.nextArr){S.nextArr+=1200;const arr=newArrivals(),n=arr.length;S.queue.push(...arr);save();toast(`🛎️ ${n} new gymnasts just signed up!`);
   if(SCREEN!=='practice')checkQueue();else if(SCREEN==='practice'&&PR&&PR.i>=PR.ids.length)checkQueue();}
- if(S.play>=S.nextSea){S.nextSea+=1800;newSeason();if(SCREEN!=='practice')render()}
+ if(S.play>=S.nextSea){S.nextSea+=1800;newSeason();if(SCREEN!=='practice'&&SCREEN!=='meet'){render();checkQueue()}}
+ coachTick();
  const a=document.getElementById('tArr'),b=document.getElementById('tSea');if(a)a.textContent=mmss(S.nextArr-S.play);if(b)b.textContent=mmss(S.nextSea-S.play);
  if(S.play%10===0)saveLocal();
 },1000);
@@ -1119,7 +1190,7 @@ syncHook=()=>Sync.soon();
  Sync.paint();Sync.run();
 })();
 
-const APP_VERSION='1794705117';
+const APP_VERSION='1794886359';
 /* ===== Auto-update: load the newest version even if the phone saved an old copy ===== */
 (function(){
  async function check(){
