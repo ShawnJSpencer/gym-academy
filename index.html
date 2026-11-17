@@ -848,25 +848,25 @@ function defaultRoutine(team){const ti=SETORDER.indexOf(LV[team].set),r={};
 function routineOf(team){if(!S.routines[team])S.routines[team]=defaultRoutine(team);return S.routines[team]}
 function startValue(ev,ids){
  if(!ids.length)return 0;
- if(ev==='vault')return Math.min(10,7.6+tier(SK[ids[0]])*0.3);
- const v=6.6+ids.reduce((a,id)=>a+sval(SK[id]),0)-Math.max(0,RT_MIN-ids.length)*0.5;return Math.min(10,Math.max(0,v))}
+ if(ev==='vault')return 10;
+ return Math.max(0,10-Math.max(0,RT_MIN-ids.length)*0.5)}
 function perform(g,ev,ids){
  if(!ids.length)return{sv:0,ded:0,score:0,skills:[],falls:0};
- const sv=startValue(ev,ids);let ded=0.05+Math.random()*0.2*(1-g.talent*0.5),falls=0;const out=[];
+ const sv=startValue(ev,ids);let ded=0.04+Math.random()*0.16*(1-g.talent*0.5),falls=0;const out=[];
  for(const id of ids){const s=SK[id],p=g.sk[id],dn=p&&p.done,fr=p?(dn?1:p.p/p.need):0;
-  let d=dn?Math.random()*0.1:0.1+Math.random()*0.35*(1-fr)+0.05;if(ev==='vault')d*=2;
+  let d=dn?Math.random()*0.08:0.1+Math.random()*0.35*(1-fr)+0.05;if(ev==='vault')d*=2;
   const fall=Math.random()<(dn?0.03:0.1+0.4*(1-fr));if(fall){d+=0.5;falls++}
   ded+=d;out.push({id,fault:(d>0.12||fall)?pick(s.f):null,fall,d})}
  return{sv,ded,score:Math.max(ev==='vault'?6:4,r025(sv-ded)),skills:out,falls}}
 function rivalGirl(col){const h=pick(HAIR),e=pick(EYES);return{first:pick(FIRST),last:pick(LAST),hairC:h[1],style:pick(STYLES),eyeC:e[1],skin:pick(SKIN),leoC:col,acc:pick(ACC),freck:Math.random()<.25,age:12}}
-function rivalScore(team){const base={amethyst:8.85,sapphire:9.0,ruby:9.15,diamond:9.3}[team];let x=base+(Math.random()+Math.random()+Math.random()-1.5)*0.35;if(Math.random()<.1)x-=.5;return r025(Math.min(9.9,x))}
+function rivalScore(team){const base={amethyst:9.45,sapphire:9.48,ruby:9.52,diamond:9.55}[team];let x=base+(Math.random()+Math.random()+Math.random()-1.5)*0.4;if(Math.random()<.12)x-=.5;return r025(Math.min(9.9,x))}
 
 /* ---- routine editor ---- */
 function rRoutine(){
  const l=LV[CUR.lvl],ev=CUR.ev,R=routineOf(l.id),ids=R[ev],gs=S.girls.filter(g=>g.lvl===l.id);
  const mc=id=>gs.filter(g=>g.sk[id]&&g.sk[id].done).length;
  const lib=Object.values(SK).filter(s=>s.ev===ev).sort((a,b)=>tier(a)-tier(b));
- const val=s=>ev==='vault'?'Start value '+fmt(Math.min(10,7.6+tier(s)*0.3)):'+'+sval(s).toFixed(1);
+ const val=s=>EV(s.ev).n;
  const back=CUR.back==='meet'?"go('meet')":`go('cls',{lvl:'${l.id}'})`;
  $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="${back}">← ${CUR.back==='meet'?'Meet':l.name}</button><div class="title"><h1>📝 ${l.em} ${l.name} Routines</h1><div class="sub">Pick the skills and their order for each event</div></div></div>
  <div class="tabs">${RT_EVENTS.map(e=>`<button class="tab ${e===ev?'on':''}" onclick="CUR.ev='${e}';render()">${EV(e).e} ${EV(e).n}<small>${fmt(startValue(e,R[e]))}</small></button>`).join('')}</div>
@@ -880,7 +880,7 @@ function rRoutine(){
  <div class="sect">All ${EV(ev).n} skills ${ev==='vault'?'(pick one)':`(up to ${RT_MAX})`}</div>
  <div class="events">${SETORDER.map(st=>{const ss=lib.filter(s=>s.set===st);if(!ss.length)return'';return`<div class="ev"><h3 style="font-size:15px">${SETNAME[st]}</h3>${ss.map(s=>{const inR=ids.includes(s.id);
   return`<div class="sk"><div class="n">${s.n}<div class="m">${val(s)} · ${mc(s.id)}/${gs.length} mastered</div></div><button class="btn small ${inR?'ghost':'pink'}" ${inR||(ev!=='vault'&&ids.length>=RT_MAX)?'disabled':''} onclick="rtAdd('${s.id}')">${inR?'✓ In':'+ Add'}</button></div>`}).join('')}</div>`}).join('')}</div>
- <div class="hint">Harder skills raise the start value, but gymnasts lose points on skills they haven't mastered, and they might fall! You can coach any routine skill from the team page.</div>`;
+ <div class="hint">Every routine starts at 10.000. Gymnasts lose a little on each skill they haven't mastered, and they might fall! Routines need at least ${RT_MIN} skills (0.5 off for each one missing). You can coach any routine skill from the team page.</div>`;
 }
 function rtAdd(id){const R=routineOf(CUR.lvl),ev=CUR.ev;if(ev==='vault')R.vault=[id];else if(!R[ev].includes(id)&&R[ev].length<RT_MAX)R[ev].push(id);save();render()}
 function rtDel(i){routineOf(CUR.lvl)[CUR.ev].splice(i,1);save();render()}
@@ -1190,7 +1190,7 @@ syncHook=()=>Sync.soon();
  Sync.paint();Sync.run();
 })();
 
-const APP_VERSION='1794886359';
+const APP_VERSION='1794886760';
 /* ===== Auto-update: load the newest version even if the phone saved an old copy ===== */
 (function(){
  async function check(){
