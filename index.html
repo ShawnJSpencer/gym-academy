@@ -975,7 +975,7 @@ function meetFinal(){
 }
 
 /* ============================ ASSISTANT COACHES ============================ */
-const LESSON=20; // seconds of play per lesson
+const LESSON=45; // seconds of play per lesson
 const coaches=()=>S.hof.filter(h=>h.coach);
 const coachOf=lvl=>S.hof.find(h=>h.coach===lvl);
 const HF=id=>S.hof.find(h=>h.id===id);
@@ -1190,7 +1190,7 @@ syncHook=()=>Sync.soon();
  Sync.paint();Sync.run();
 })();
 
-const APP_VERSION='1794886760';
+const APP_VERSION='1794888230';
 /* ===== Auto-update: load the newest version even if the phone saved an old copy ===== */
 (function(){
  async function check(){
