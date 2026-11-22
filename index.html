@@ -128,7 +128,7 @@ const LEVELS=[
  {id:'kinder',name:'Kinder Kartwheelers',em:'🌈',min:5,max:6,entry:1,set:'kinder',desc:'Kindergarten class',col:'#ffc94d'},
  {id:'sparkle',name:'Sparkle Starters',em:'✨',min:7,max:10,entry:1,set:'sparkle',desc:'Beginner class',col:'#5fd6a6'},
  {id:'stars',name:'Shooting Stars',em:'🌠',min:11,max:16,entry:1,set:'sparkle',desc:'Beginner class for big kids',col:'#4cc3e8'},
- {id:'rockets',name:'Rising Rockets',em:'🚀',min:7,max:16,set:'rockets',desc:'Intermediate class',col:'#6f9bff'},
+ {id:'rockets',name:'Rising Rockets',em:'🚀',min:7,max:16,set:'rockets',meet:1,desc:'Intermediate class · competes each season',col:'#6f9bff'},
  {id:'amethyst',name:'Team Amethyst',em:'💜',min:7,max:16,team:1,set:'amethyst',desc:'Competition team · Level 1',col:'#a874ff'},
  {id:'sapphire',name:'Team Sapphire',em:'💙',min:9,max:16,team:1,set:'sapphire',desc:'Competition team · Level 2',col:'#3f6bff'},
  {id:'ruby',name:'Team Ruby',em:'❤️',min:11,max:16,team:1,set:'ruby',desc:'Competition team · Level 3',col:'#ff3d5e'},
@@ -689,7 +689,7 @@ function rHome(){
  <div class="stats"><span class="chip">⭐ ${S.pts} pts</span><span class="chip">👧 ${S.girls.length} gymnasts</span><span class="chip">🏅 ${S.st.mast} skills mastered</span>
  <span class="chip">🆕 New gymnasts in <span id="tArr">${mmss(S.nextArr-S.play)}</span></span><span class="chip">🎂 Next season in <span id="tSea">${mmss(S.nextSea-S.play)}</span></span></div>
  ${pend?`<div class="banner">🛎️ ${pend} new gymnast${pend>1?'s are':' is'} waiting at the front desk! <button class="btn small pink" onclick="checkQueue()">Meet them</button></div>`:''}
- ${(()=>{const t=LEVELS.filter(l=>l.team&&meetReady(l.id));return t.length?`<div class="banner">🏆 Meet season! ${t.map(l=>l.em+' '+l.name).join(', ')} can compete in the ${MEETS[(S.season-1)%MEETS.length]}.<button class="btn small pink" onclick="go('cls',{lvl:'${t[0].id}'})">Go</button></div>`:''})()}
+ ${(()=>{const t=LEVELS.filter(l=>(l.team||l.meet)&&meetReady(l.id));return t.length?`<div class="banner">🏆 Meet season! ${t.map(l=>l.em+' '+l.name).join(', ')} can compete in the ${MEETS[(S.season-1)%MEETS.length]}.<button class="btn small pink" onclick="go('cls',{lvl:'${t[0].id}'})">Go</button></div>`:''})()}
  <div class="sect">Classes</div><div class="grid">${LEVELS.filter(l=>!l.team).map(lvlCard).join('')}</div>
  <div class="sect">💎 Competition Teams — earned by moving up</div><div class="grid">${LEVELS.filter(l=>l.team).map(lvlCard).join('')}</div>
  <div class="hint">Gymnasts move up after mastering ${PROMOTE_NEED} of their level's skills. A few new girls sign up every 20 minutes of coaching, and every 30 minutes a new season starts and everyone has a birthday.</div>`;
@@ -703,11 +703,11 @@ function rClass(){
  const l=LV[CUR.lvl],gs=S.girls.filter(g=>g.lvl===l.id),set=SETS[l.set];
  $app.innerHTML=`<div class="top"><button class="btn ghost small" onclick="go('home')">← Gym</button><div class="title"><h1>${l.em} ${l.name}</h1><div class="sub">Ages ${l.min}${l.max>=16?'+':'–'+l.max} · ${l.desc} · ${gs.length} gymnasts</div></div></div>
  ${coachBar(l)}
- ${l.team?teamBar(l,gs):''}
+ ${l.team||l.meet?teamBar(l,gs):''}
  ${gs.length?`<div class="roster">${gs.map(gCard).join('')}</div>`:`<div class="ask"><div class="q">No gymnasts in this ${l.team?'team':'class'} yet.</div><div class="hint">${l.entry?'Place new gymnasts here when they sign up.':'Gymnasts join by moving up from the level before.'}</div></div>`}
  <div class="sect">Coach a skill</div><div class="events">${EVENTS.map(e=>`<div class="ev"><h3>${e.e} ${e.n}</h3>${set.filter(s=>s.ev===e.id).map(s=>{const m=gs.filter(g=>g.sk[s.id]&&g.sk[s.id].done).length;
   return`<div class="sk"><div class="n">${s.n}<div class="m">${m}/${gs.length} mastered${s.pre?' · 🔒 needs '+SK[s.pre].n+' first':''}</div></div><button class="btn small pink" ${gs.length?'':'disabled'} onclick="startPractice('${l.id}','${s.id}')">Coach</button></div>`}).join('')}</div>`).join('')}</div>
- ${l.team?routineExtras(l,gs):''}`;
+ ${l.team||l.meet?routineExtras(l,gs):''}`;
 }
 function teamBar(l,gs){const done=S.meetDone[l.id]===S.season;
  return`<div class="row" style="justify-content:flex-start;margin-bottom:12px"><button class="btn" onclick="go('routine',{lvl:'${l.id}',ev:'vault'})">📝 Routines</button>
@@ -864,7 +864,7 @@ function perform(g,ev,ids){
   ded+=d;out.push({id,fault:pick(s.f),fall,d})}
  return{sv,ded,score:Math.max(ev==='vault'?6:4,r025(sv-ded)),skills:out,falls}}
 function rivalGirl(col){const h=pick(HAIR),e=pick(EYES);return{first:pick(FIRST),last:pick(LAST),hairC:h[1],style:pick(STYLES),eyeC:e[1],skin:pick(SKIN),leoC:col,acc:pick(ACC),freck:Math.random()<.25,age:12}}
-function rivalScore(team){const base={amethyst:9.66,sapphire:9.7,ruby:9.74,diamond:9.78}[team];let x=base+(Math.random()+Math.random()+Math.random()-1.5)*0.3;if(Math.random()<.1)x-=.5;return r025(Math.min(9.975,x))}
+function rivalScore(team){const base={rockets:9.6,amethyst:9.66,sapphire:9.7,ruby:9.74,diamond:9.78}[team];let x=base+(Math.random()+Math.random()+Math.random()-1.5)*0.3;if(Math.random()<.1)x-=.5;return r025(Math.min(9.975,x))}
 
 /* ---- routine editor ---- */
 function rRoutine(){
@@ -987,7 +987,7 @@ const MAXC=2,coachesOf=lvl=>S.hof.filter(h=>h.coach===lvl).sort((a,b)=>a.id-b.id
 const HF=id=>S.hof.find(h=>h.id===id);
 function lessonPool(lvl,skip){ // the earliest skill someone still needs; once all are mastered, polish the least-practiced one
  const gs=S.girls.filter(g=>g.lvl===lvl);if(!gs.length)return null;
- const set=SETS[LV[lvl].set].filter(s=>!skip.includes(s.id));if(LV[lvl].team){const R=routineOf(lvl);for(const e of RT_EVENTS)for(const id of R[e])if(!skip.includes(id)&&!set.includes(SK[id]))set.push(SK[id])}
+ const set=SETS[LV[lvl].set].filter(s=>!skip.includes(s.id));if(LV[lvl].team||LV[lvl].meet){const R=routineOf(lvl);for(const e of RT_EVENTS)for(const id of R[e])if(!skip.includes(id)&&!set.includes(SK[id]))set.push(SK[id])}
  const ok=(g,s)=>!s.pre||(g.sk[s.pre]&&g.sk[s.pre].done);
  for(const s of set){const who=gs.filter(g=>!(g.sk[s.id]&&g.sk[s.id].done)&&ok(g,s));if(who.length)return{s,who}}
  let best=null,low=1e9;for(const s of set){const w=gs.filter(g=>ok(g,s));if(!w.length)continue;const a=w.reduce((t,g)=>t+extra(g.sk[s.id]),0)/w.length;if(a<low){low=a;best={s,who:w,polish:1}}}
@@ -1202,7 +1202,7 @@ syncHook=()=>Sync.soon();
  Sync.paint();Sync.run();
 })();
 
-const APP_VERSION='1795312292';
+const APP_VERSION='1795312506';
 /* ===== Auto-update: load the newest version even if the phone saved an old copy ===== */
 (function(){
  async function check(){
