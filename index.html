@@ -649,6 +649,11 @@ function stillPose(sk,girl){const A=buildAnim(sk,girl,null);const W=solve(sample
 
 /* ============================ PROGRESS ============================ */
 const MAXTRY=10;
+const reps=p=>p?(p.r!=null?p.r:p.p):0;
+const extra=p=>p&&p.done?Math.max(0,reps(p)-p.need):0;
+function perfChance(g,id){const p=g.sk[id];if(!p)return 0;if(!p.done)return 0.15*p.p/p.need;return 0.55+0.4*(1-Math.exp(-extra(p)/8))}
+const polish=(g,id)=>{const p=g.sk[id];return p&&p.done?Math.round((perfChance(g,id)-0.55)/0.4*100):0};
+function addRep(p){p.r=reps(p)+1;if(!p.done){p.p++;if(p.p>=p.need){p.done=1;S.st.mast++;return true}}return false}
 function prog(g,id){if(!g.sk[id]){const ex=0.6+g.talent*1.8;g.sk[id]={need:Math.min(MAXTRY,3+Math.floor(Math.pow(Math.random(),ex)*(MAXTRY-2))),p:0,done:0,last:null}}return g.sk[id]}
 const mastered=(g,set)=>(SETS[set||LV[g.lvl].set]||[]).filter(s=>g.sk[s.id]&&g.sk[s.id].done).length;
 function nextLevel(g){const i=LEVELS.findIndex(l=>l.id===g.lvl);const l=LEVELS[i];
@@ -727,7 +732,7 @@ function girlModal(id){
  <div class="facts"><b>Age</b><span>${g.age}</span><b>Hair</b><span>${g.hair}, ${g.style}</span><b>Eyes</b><span>${g.eye}</span><b>Leotard</b><span>${g.leo}</span></div></div></div>
  <div class="facts" style="margin-top:10px"><b>Personality</b><span>${g.trait}</span><b>Favorite event</b><span>${g.fav}</span><b>Loves</b><span>${g.animal} & ${g.snack}</span><b>Dream</b><span>To ${g.dream}</span>${g.medals?`<b>Medals</b><span>🥇 ${g.medals.gold} &nbsp;🥈 ${g.medals.silver} &nbsp;🥉 ${g.medals.bronze}</span>`:''}</div>
  <div class="sect">Skills · ${mastered(g)}/${set.length} mastered</div>
- ${set.map(s=>{const p=g.sk[s.id];const pc=p?(p.done?100:Math.round(p.p/p.need*100)):0;return`<div class="skl"><span style="width:170px">${p&&p.done?'🏅':EVENTS.find(e=>e.id===s.ev).e} ${s.n}</span><div class="bar"><i style="width:${pc}%"></i></div></div>`}).join('')}
+ ${set.map(s=>{const p=g.sk[s.id];const pc=p?(p.done?100:Math.round(p.p/p.need*100)):0;return`<div class="skl"><span style="width:170px">${p&&p.done?'🏅':EVENTS.find(e=>e.id===s.ev).e} ${s.n}</span><div class="bar"><i style="width:${pc}%"></i></div>${p&&p.done?`<span style="width:62px;font-size:12px">✨ ${polish(g,s.id)}%</span>`:''}</div>`}).join('')}
  ${r?(r.ok?`<div class="banner" style="margin-top:12px">⬆️ ${g.first} is ready for ${r.lv.em} ${r.lv.name}!<button class="btn small" onclick="promote(${g.id})">Move up!</button></div>`:`<div class="hint" style="margin-top:12px">${g.first} has mastered enough skills, but ${r.lv.name} is for ages ${r.lv.min}+. She'll move up after her next birthday${g.age+1<r.lv.min?'s':''}.</div>`):(nextLevel(g)?`<div class="hint" style="margin-top:12px">Master ${PROMOTE_NEED} skills to move up to ${nextLevel(g).name}.</div>`:`<div class="hint" style="margin-top:12px">💎 Top of the academy!</div>`)}
  <div class="row" style="margin-top:14px"><button class="btn ghost" onclick="closeM()">Close</button></div>`);
 }
@@ -774,7 +779,7 @@ function toggleSpeed(){SPEED=SPEED<1?1:0.5;const b=document.getElementById('spd'
 function whoBar(){
  const g=G(PR.ids[PR.i]),p=prog(g,PR.skid),pc=p.done?100:Math.round(p.p/p.need*100);
  document.getElementById('who').innerHTML=`${face(g)}<div><div class="nm">${g.first} <span style="font-size:14px;opacity:.6">age ${g.age}</span></div>
- <div style="font-size:13px;font-weight:800;opacity:.7">${p.done?'🏅 Mastered!':'Learning '+SK[PR.skid].n}</div><div class="bar"><i style="width:${pc}%"></i></div></div>
+ <div style="font-size:13px;font-weight:800;opacity:.7">${p.done?`🏅 Mastered · ✨ Polish ${polish(g,PR.skid)}%`:'Learning '+SK[PR.skid].n}</div><div class="bar"><i style="width:${p.done?polish(g,PR.skid):pc}%;${p.done?'background:linear-gradient(90deg,#ffd84d,#ff9f1c)':''}"></i></div></div>
  <div class="line">${PR.ids.map((id,i)=>{const gg=G(id);return face(gg).replace('<svg ',`<svg class="${i===PR.i?'cur':i<PR.i?'dn':''}" `)}).join('')}</div>`;
 }
 function lbl(t){const e=document.getElementById('slbl');if(e)e.textContent=t}
@@ -785,8 +790,8 @@ function turn(){
  whoBar();
  if(sk.pre&&!(g.sk[sk.pre]&&g.sk[sk.pre].done)){PR.fault=null;lbl(`${g.first} · not ready yet`);const fg=document.getElementById('fig');if(fg)fg.innerHTML=stillPose(sk,g);
   ask.innerHTML=`<div class="msg no">🔒 ${g.first} needs to master the ${SK[sk.pre].n} before she can learn the ${sk.n}.</div><div class="row"><button class="btn" onclick="nextG()">Next gymnast →</button></div>`;return}
- if(p.done){PR.fault=null;lbl(`${g.first} · already mastered`);ask.innerHTML=`<div class="q">Watch ${g.first}! 👀</div>`;
-  play(buildAnim(sk,g,null),g,()=>{ask.innerHTML=`<div class="msg ok">✨ Perfect! ${g.first} has already mastered the ${sk.n}.</div><div class="row"><button class="btn" onclick="nextG()">Next gymnast →</button></div>`});return}
+ if(p.done&&Math.random()<perfChance(g,sk.id)){PR.fault=null;lbl(`${g.first} · mastered`);ask.innerHTML=`<div class="q">Watch ${g.first}! 👀</div>`;
+  play(buildAnim(sk,g,null),g,()=>{addRep(p);save();whoBar();ask.innerHTML=`<div class="msg ok">✨ Perfect! Practice makes ${g.first} even more consistent.</div><div class="row"><button class="btn" onclick="nextG()">Next gymnast →</button></div>`});return}
  let cand=sk.f.filter(x=>x!==p.last);PR.fault=pick(cand.length?cand:sk.f);
  PR.opts=shuffle([PR.fault,...shuffle(sk.f.filter(x=>x!==PR.fault)).slice(0,2)]);
  lbl(`${g.first}'s turn`);ask.innerHTML=`<div class="q">Watch ${g.first} carefully… 👀</div><div class="hint">Something will be a little off. Can you spot it?</div>`;
@@ -804,8 +809,8 @@ function guess(i){
  ask.querySelectorAll('.row').forEach(r=>r.remove());
  PR.opts.forEach((x,j)=>{const b=document.getElementById('op'+j);b.disabled=true;b.onclick=null;if(x===PR.fault)b.classList.add(o===x?'right':'wrong');else if(j===i)b.classList.add('wrong');else b.classList.add('dim')});
  if(o===PR.fault){
-  const was=p.done;p.p++;p.last=PR.fault;S.pts+=10;S.st.ok++;PR.ok++;const now=!was&&p.p>=p.need;
-  if(now){p.done=1;S.st.mast++;S.pts+=50;PR.newM.push(g.first)}
+  const now=addRep(p);p.last=PR.fault;S.pts+=10;S.st.ok++;PR.ok++;
+  if(now){S.pts+=50;PR.newM.push(g.first)}
   save();whoBar();
   ask.insertAdjacentHTML('beforeend',`<div class="msg ok" style="margin-top:12px">✅ Great eye, Coach! +10 ⭐</div><div style="text-align:center"><span class="coach">🗣️ “${FAULTS[PR.fault].fix}”</span></div><div class="hint" id="fixh">Watch ${g.first} try it again…</div>`);
   lbl(`${g.first} fixes it!`);
@@ -848,18 +853,18 @@ function defaultRoutine(team){const ti=SETORDER.indexOf(LV[team].set),r={};
 function routineOf(team){if(!S.routines[team])S.routines[team]=defaultRoutine(team);return S.routines[team]}
 function startValue(ev,ids){
  if(!ids.length)return 0;
- if(ev==='vault')return 10;
- return Math.max(0,10-Math.max(0,RT_MIN-ids.length)*0.5)}
+ return 10}
 function perform(g,ev,ids){
  if(!ids.length)return{sv:0,ded:0,score:0,skills:[],falls:0};
- const sv=startValue(ev,ids);let ded=0.04+Math.random()*0.16*(1-g.talent*0.5),falls=0;const out=[];
+ const sv=startValue(ev,ids);let ded=0,falls=0;const out=[];
  for(const id of ids){const s=SK[id],p=g.sk[id],dn=p&&p.done,fr=p?(dn?1:p.p/p.need):0;
-  let d=dn?Math.random()*0.08:0.1+Math.random()*0.35*(1-fr)+0.05;if(ev==='vault')d*=2;
-  const fall=Math.random()<(dn?0.03:0.1+0.4*(1-fr));if(fall){d+=0.5;falls++}
-  ded+=d;out.push({id,fault:(d>0.12||fall)?pick(s.f):null,fall,d})}
+  if(Math.random()<perfChance(g,id)){out.push({id,fault:null,fall:false,d:0});continue}
+  let d=dn?0.1+Math.random()*0.15:0.15+Math.random()*0.35*(1-fr)+0.05;if(ev==='vault')d*=1.5;
+  const fall=Math.random()<(dn?0.04*Math.exp(-extra(p)/10):0.1+0.4*(1-fr));if(fall){d+=0.5;falls++}
+  ded+=d;out.push({id,fault:pick(s.f),fall,d})}
  return{sv,ded,score:Math.max(ev==='vault'?6:4,r025(sv-ded)),skills:out,falls}}
 function rivalGirl(col){const h=pick(HAIR),e=pick(EYES);return{first:pick(FIRST),last:pick(LAST),hairC:h[1],style:pick(STYLES),eyeC:e[1],skin:pick(SKIN),leoC:col,acc:pick(ACC),freck:Math.random()<.25,age:12}}
-function rivalScore(team){const base={amethyst:9.45,sapphire:9.48,ruby:9.52,diamond:9.55}[team];let x=base+(Math.random()+Math.random()+Math.random()-1.5)*0.4;if(Math.random()<.12)x-=.5;return r025(Math.min(9.9,x))}
+function rivalScore(team){const base={amethyst:9.66,sapphire:9.7,ruby:9.74,diamond:9.78}[team];let x=base+(Math.random()+Math.random()+Math.random()-1.5)*0.3;if(Math.random()<.1)x-=.5;return r025(Math.min(9.975,x))}
 
 /* ---- routine editor ---- */
 function rRoutine(){
@@ -872,7 +877,6 @@ function rRoutine(){
  <div class="tabs">${RT_EVENTS.map(e=>`<button class="tab ${e===ev?'on':''}" onclick="CUR.ev='${e}';render()">${EV(e).e} ${EV(e).n}<small>${fmt(startValue(e,R[e]))}</small></button>`).join('')}</div>
  <div class="ask"><div class="q">${ev==='vault'?'Competition vault':EV(ev).n+' routine'}</div>
  <div class="msg">Start value: <b>${fmt(startValue(ev,ids))}</b> / 10.000</div>
- ${ev!=='vault'&&ids.length<RT_MIN?`<div class="hint" style="color:var(--bad)">⚠️ A routine needs at least ${RT_MIN} skills. Each missing skill costs 0.5.</div>`:''}
  ${ids.length?'':'<div class="hint">No skills yet. Add some from the list below.</div>'}
  ${ids.map((id,i)=>{const s=SK[id];return`<div class="sk"><b style="width:22px">${i+1}.</b><div class="n">${s.n}<div class="m">${SETNAME[s.set]} · ${val(s)} · ${mc(id)}/${gs.length} mastered</div></div>
   ${ev!=='vault'?`<button class="btn ghost small" ${i?'':'disabled'} onclick="rtMove(${i},-1)">↑</button><button class="btn ghost small" ${i<ids.length-1?'':'disabled'} onclick="rtMove(${i},1)">↓</button>`:''}<button class="btn ghost small" onclick="rtDel(${i})">✕</button></div>`}).join('')}
@@ -880,7 +884,7 @@ function rRoutine(){
  <div class="sect">All ${EV(ev).n} skills ${ev==='vault'?'(pick one)':`(up to ${RT_MAX})`}</div>
  <div class="events">${SETORDER.map(st=>{const ss=lib.filter(s=>s.set===st);if(!ss.length)return'';return`<div class="ev"><h3 style="font-size:15px">${SETNAME[st]}</h3>${ss.map(s=>{const inR=ids.includes(s.id);
   return`<div class="sk"><div class="n">${s.n}<div class="m">${val(s)} · ${mc(s.id)}/${gs.length} mastered</div></div><button class="btn small ${inR?'ghost':'pink'}" ${inR||(ev!=='vault'&&ids.length>=RT_MAX)?'disabled':''} onclick="rtAdd('${s.id}')">${inR?'✓ In':'+ Add'}</button></div>`}).join('')}</div>`}).join('')}</div>
- <div class="hint">Every routine starts at 10.000. Gymnasts lose a little on each skill they haven't mastered, and they might fall! Routines need at least ${RT_MIN} skills (0.5 off for each one missing). You can coach any routine skill from the team page.</div>`;
+ <div class="hint">Every routine starts at 10.000. Each skill a gymnast doesn't do perfectly loses points. Mastered skills are done perfectly more often, and the more she practices after mastering one, the more often it's perfect. You can coach any routine skill from the team page.</div>`;
 }
 function rtAdd(id){const R=routineOf(CUR.lvl),ev=CUR.ev;if(ev==='vault')R.vault=[id];else if(!R[ev].includes(id)&&R[ev].length<RT_MAX)R[ev].push(id);save();render()}
 function rtDel(i){routineOf(CUR.lvl)[CUR.ev].splice(i,1);save();render()}
@@ -975,20 +979,22 @@ function meetFinal(){
 }
 
 /* ============================ ASSISTANT COACHES ============================ */
-const LESSON=45; // seconds of play per lesson
+const LESSON=180; // seconds of play per lesson (3 minutes)
 const coaches=()=>S.hof.filter(h=>h.coach);
 const coachOf=lvl=>S.hof.find(h=>h.coach===lvl);
 const HF=id=>S.hof.find(h=>h.id===id);
-function coachLesson(h){ // the earliest skill in the class that someone still needs
+function coachLesson(h){ // the earliest skill someone still needs; once all are mastered, polish the least-practiced one
  const gs=S.girls.filter(g=>g.lvl===h.coach);if(!gs.length)return null;
- for(const s of SETS[LV[h.coach].set]){const who=gs.filter(g=>!(g.sk[s.id]&&g.sk[s.id].done)&&(!s.pre||(g.sk[s.pre]&&g.sk[s.pre].done)));if(who.length)return{s,who}}
- return null}
+ const set=SETS[LV[h.coach].set].slice();if(LV[h.coach].team){const R=routineOf(h.coach);for(const e of RT_EVENTS)for(const id of R[e])if(!set.includes(SK[id]))set.push(SK[id])}
+ for(const s of set){const who=gs.filter(g=>!(g.sk[s.id]&&g.sk[s.id].done)&&(!s.pre||(g.sk[s.pre]&&g.sk[s.pre].done)));if(who.length)return{s,who}}
+ let best=null,low=1e9;for(const s of set){const a=gs.reduce((t,g)=>t+extra(g.sk[s.id]),0)/gs.length;if(a<low){low=a;best=s}}
+ return best?{s:best,who:gs,polish:1}:null}
 function coachStatus(h){const L=coachLesson(h);const gs=S.girls.filter(g=>g.lvl===h.coach);
- if(!gs.length)return'Waiting for gymnasts to join';if(!L)return'Everyone has mastered every skill! 🎉';
+ if(!gs.length)return'Waiting for gymnasts to join';if(!L)return'Resting';if(L.polish)return`Everyone has mastered every skill! Polishing the ${L.s.n}`;
  return`Teaching the ${L.s.n} · ${gs.filter(g=>g.sk[L.s.id]&&g.sk[L.s.id].done).length}/${gs.length} mastered`}
 function coachTick(){let changed=false;
  for(const h of coaches()){h.t=(h.t||0)+1;if(h.t<LESSON)continue;h.t=0;const L=coachLesson(h);if(!L)continue;const got=[];
-  for(const g of L.who){const p=prog(g,L.s.id);if(p.done)continue;p.p++;if(p.p>=p.need){p.done=1;S.st.mast++;got.push(g.first)}}
+  for(const g of L.who){const p=prog(g,L.s.id);if(addRep(p))got.push(g.first)}
   changed=true;if(got.length&&SCREEN!=='meet')toast(`🧢 Coach ${h.first}: ${got.join(', ')} mastered the ${L.s.n}! 🏅`);
   if(SCREEN==='cls'&&CUR.lvl===h.coach&&!$m.classList.contains('on'))render();}
  if(changed)save();
@@ -1190,7 +1196,7 @@ syncHook=()=>Sync.soon();
  Sync.paint();Sync.run();
 })();
 
-const APP_VERSION='1794888230';
+const APP_VERSION='1795308162';
 /* ===== Auto-update: load the newest version even if the phone saved an old copy ===== */
 (function(){
  async function check(){
