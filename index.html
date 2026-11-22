@@ -653,7 +653,7 @@ const reps=p=>p?(p.r!=null?p.r:p.p):0;
 const extra=p=>p&&p.done?Math.max(0,reps(p)-p.need):0;
 function perfChance(g,id){const p=g.sk[id];if(!p)return 0;if(!p.done)return 0.15*p.p/p.need;return 0.55+0.4*(1-Math.exp(-extra(p)/8))}
 const polish=(g,id)=>{const p=g.sk[id];return p&&p.done?Math.round((perfChance(g,id)-0.55)/0.4*100):0};
-function addRep(p){p.r=reps(p)+1;if(!p.done){p.p++;if(p.p>=p.need){p.done=1;S.st.mast++;return true}}return false}
+function addRep(p,n=1){p.r=reps(p)+n;if(!p.done){p.p=Math.min(p.need,p.p+n);if(p.p>=p.need){p.done=1;S.st.mast++;return true}}return false}
 function prog(g,id){if(!g.sk[id]){const ex=0.6+g.talent*1.8;g.sk[id]={need:Math.min(MAXTRY,3+Math.floor(Math.pow(Math.random(),ex)*(MAXTRY-2))),p:0,done:0,last:null}}return g.sk[id]}
 const mastered=(g,set)=>(SETS[set||LV[g.lvl].set]||[]).filter(s=>g.sk[s.id]&&g.sk[s.id].done).length;
 function nextLevel(g){const i=LEVELS.findIndex(l=>l.id===g.lvl);const l=LEVELS[i];
@@ -979,6 +979,7 @@ function meetFinal(){
 }
 
 /* ============================ ASSISTANT COACHES ============================ */
+const COACH_LESSONS=2; // coach lessons it takes to master a skill
 const LESSON=60; // seconds of play per lesson (1 minute)
 const coaches=()=>S.hof.filter(h=>h.coach);
 const coachOf=lvl=>S.hof.find(h=>h.coach===lvl);
@@ -999,7 +1000,7 @@ function coachStatus(h){const L=coachLesson(h);const gs=S.girls.filter(g=>g.lvl=
  return`Teaching the ${L.s.n} · ${gs.filter(g=>g.sk[L.s.id]&&g.sk[L.s.id].done).length}/${gs.length} mastered`}
 function coachTick(){let changed=false;
  for(const h of coaches()){h.t=(h.t||0)+1;if(h.t<LESSON)continue;h.t=0;const L=coachLesson(h);if(!L)continue;const got=[];
-  for(const g of L.who){const p=prog(g,L.s.id);if(addRep(p))got.push(g.first)}
+  for(const g of L.who){const p=prog(g,L.s.id);if(addRep(p,p.done?1:Math.ceil(p.need/COACH_LESSONS)))got.push(g.first)}
   changed=true;if(got.length&&SCREEN!=='meet')toast(`🧢 Coach ${h.first}: ${got.join(', ')} mastered the ${L.s.n}! 🏅`);
   if(SCREEN==='cls'&&CUR.lvl===h.coach&&!$m.classList.contains('on'))render();}
  if(changed)save();
@@ -1201,7 +1202,7 @@ syncHook=()=>Sync.soon();
  Sync.paint();Sync.run();
 })();
 
-const APP_VERSION='1795312103';
+const APP_VERSION='1795312292';
 /* ===== Auto-update: load the newest version even if the phone saved an old copy ===== */
 (function(){
  async function check(){
