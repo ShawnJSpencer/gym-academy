@@ -660,7 +660,7 @@ const mastered=(g,set)=>(SETS[set||LV[g.lvl].set]||[]).filter(s=>g.sk[s.id]&&g.s
 function nextLevel(g){const i=LEVELS.findIndex(l=>l.id===g.lvl);const l=LEVELS[i];
  if(l.id==='mini')return LV.kinder;if(l.id==='kinder')return g.age<=10?LV.sparkle:LV.stars;if(l.id==='sparkle'||l.id==='stars')return LV.rockets;
  if(l.id==='diamond')return null;return LEVELS[i+1];}
-function readyInfo(g){const n=nextLevel(g);if(!n)return null;if(mastered(g)<PROMOTE_NEED)return null;return{lv:n,ok:g.age>=n.min}}
+function readyInfo(g){const n=nextLevel(g);if(!n)return null;if(mastered(g)<PROMOTE_NEED)return null;return{lv:n,ok:true}}
 const TITLES=[[0,'Assistant Coach'],[300,'Coach'],[900,'Head Coach'],[2000,'Star Coach'],[4000,'Elite Coach'],[8000,'Olympic Coach']];
 const title=()=>TITLES.filter(t=>S.pts>=t[0]).pop()[1];
 
@@ -1237,7 +1237,7 @@ syncHook=()=>Sync.soon();
  Sync.paint();Sync.run();
 })();
 
-const APP_VERSION='1795386252';
+const APP_VERSION='1795386606';
 /* ===== Auto-update: load the newest version even if the phone saved an old copy ===== */
 (function(){
  async function check(){
